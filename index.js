@@ -3,8 +3,8 @@ import cors from 'cors';
 import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import { UserController } from './controllers/index.js';
-import { loginValidation, registerValidation } from './validations.js';
+import { StudentController, UserController } from './controllers/index.js';
+import { loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
@@ -35,6 +35,10 @@ app.use('/uploads', express.static('uploads'));
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+
+/* Регистрация Студента */
+app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
+app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
