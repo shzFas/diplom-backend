@@ -40,6 +40,11 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 
+/* Создание класса */
+app.post('/classList');
+app.get('/classList');
+app.get('/classList/:id');
+
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
