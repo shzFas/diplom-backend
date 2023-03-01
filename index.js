@@ -4,7 +4,7 @@ import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { ClassesController, StudentController, UserController } from './controllers/index.js';
-import { loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
+import { classCreateValidation, loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
@@ -41,7 +41,7 @@ app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, S
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 
 /* Создание класса */
-app.post('/classList', ClassesController.createClasslist);
+app.post('/classList', classCreateValidation, handleValidationErrors, ClassesController.createClasslist);
 app.get('/classList', ClassesController.getAllClasses);
 app.get('/classList/:id', ClassesController.getOne);
 
