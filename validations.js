@@ -25,3 +25,7 @@ export const registerStudentValidation = [
   body('classId', 'Укажите класс').isLength({ min: 3 }),
   body('avatarUrl', 'Неверная ссылка на аватарку').optional().isURL(),
 ];
+
+export const classCreateValidation = [
+  body('className', 'Введите название класса').isLength({ min: 2 }).isString(),
+];
