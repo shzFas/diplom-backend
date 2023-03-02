@@ -55,6 +55,7 @@ app.get('/predmet/:id', PredmetController.getOne);
 app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
 app.get('/ktp', KtpController.getAllKtp);
 app.get('/ktp/:id', KtpController.getOne);
+app.get('/ktp/:predmetId/:classId', KtpController.getByClassByPredmet);
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
