@@ -51,7 +51,7 @@ app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
 
 /* Создание плана */
-app.post('/ktp', KtpController.createKtp);
+app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
 app.get('/ktp', KtpController.getAllKtp);
 app.get('/ktp/:id', KtpController.getOne);
 
