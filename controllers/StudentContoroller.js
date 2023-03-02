@@ -84,3 +84,15 @@ export const login = async (req, res) => {
     });
   }
 };
+
+export const getAllStudents = async (req, res) => {
+  try {
+    const students = await StudentModel.find().exec();
+    res.json(students);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить студентов',
+    });
+  }
+};

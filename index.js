@@ -8,7 +8,7 @@ import { classCreateValidation, ktpValidation, loginStudentValidation, loginVali
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
-  .connect()
+  .connect(``)
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
@@ -39,6 +39,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 /* Регистрация Студента */
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
+app.get('/students', StudentController.getAllStudents);
 
 /* Создание класса */
 app.post('/classList', classCreateValidation, handleValidationErrors, ClassesController.createClasslist);
