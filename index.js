@@ -40,7 +40,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 app.get('/students', StudentController.getAllStudents);
-app.get('/students/:id', StudentController.getOne);
+app.get('/student/:id', StudentController.getOne);
 app.get('/students/:classId', StudentController.getStudentsByClass);
 
 /* Создание класса */
@@ -56,8 +56,14 @@ app.get('/predmet/:id', PredmetController.getOne);
 /* Создание плана */
 app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
 app.get('/ktp', KtpController.getAllKtp);
-app.get('/ktp/:id', KtpController.getOne);
+app.get('/ktps/:id', KtpController.getOne);
 app.get('/ktp/:predmetId/:classId', KtpController.getByClassByPredmet);
+
+/* Оценки */
+app.post('/marks');
+app.get('/marks');
+app.get('/marks/:id');
+app.get('/mark/:studentId/:ktpId');
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
