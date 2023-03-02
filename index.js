@@ -4,11 +4,11 @@ import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { ClassesController, KtpController, PredmetController, StudentController, UserController } from './controllers/index.js';
-import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
+import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, predmetValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
-  .connect(`ССЫЛКА НА МОНГУ`)
+  .connect()
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
