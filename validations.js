@@ -34,3 +34,12 @@ export const predmetValidation = [
   body('predmetName', 'Введите название предмета').isLength({ min: 2 }).isString(),
   body('classes', 'Добавьте классы в предмет').isArray(),
 ];
+
+export const ktpValidation = [
+  body('ktpTitle', 'Введите тему урока').isLength({ min: 2 }).isString(),
+  body('ktpDate', 'Введите дату урока').isLength({ min: 2 }).isString(),
+  body('ktpPredmet', 'Введите id предмета').isLength({ min: 2 }).isString(),
+  body('ktpClass', 'Введите id Класса').isLength({ min: 2 }).isString(),
+  body('ktpTeacher', 'Введите id Учителя').isLength({ min: 2 }).isString(),
+  body('ktpSorSoch', 'Введите тип урока').isLength({ min: 2 }).isString(),
+];

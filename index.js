@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import { ClassesController, PredmetController, StudentController, UserController } from './controllers/index.js';
+import { ClassesController, KtpController, PredmetController, StudentController, UserController } from './controllers/index.js';
 import { classCreateValidation, loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
@@ -49,6 +49,11 @@ app.get('/classList/:id', ClassesController.getOne);
 app.post('/predmet', predmetValidation, handleValidationErrors, PredmetController.createPredmet);
 app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
+
+/* Создание плана */
+app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
+app.get('/ktp', KtpController.getAllKtp);
+app.get('/ktp/:id', KtpController.getOne);
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
