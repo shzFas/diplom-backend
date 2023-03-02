@@ -43,3 +43,13 @@ export const ktpValidation = [
   body('ktpTeacher', 'Введите id Учителя').isLength({ min: 2 }).isString(),
   body('ktpSorSoch', 'Введите тип урока').isLength({ min: 2 }).isString(),
 ];
+
+export const markValidation = [
+  body('markTeacher', 'Введите id Преподавателя').isLength({ min: 2 }).isString(),
+  body('markPredmet', 'Введите id Предмета').isLength({ min: 2 }).isString(),
+  body('markStudent', 'Введите id ученика').isLength({ min: 2 }).isString(),
+  body('markClassStudent', 'Введите id Класса').isLength({ min: 2 }).isString(),
+  body('markDate', 'Введите id плана(дата урока его ID)').isLength({ min: 2 }).isString(),
+  body('markFalse', 'true || false').isBoolean(),
+  body('markValue', 'от 0 до 10').isNumeric(),
+];

@@ -4,7 +4,7 @@ import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { ClassesController, KtpController, MarkController, PredmetController, StudentController, UserController } from './controllers/index.js';
-import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, predmetValidation, registerStudentValidation, registerValidation } from './validations.js';
+import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, markValidation, predmetValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
@@ -60,7 +60,7 @@ app.get('/ktps/:id', KtpController.getOne);
 app.get('/ktp/:predmetId/:classId', KtpController.getByClassByPredmet);
 
 /* Оценки */
-app.post('/marks', MarkController.createMark);
+app.post('/marks', markValidation, handleValidationErrors, MarkController.createMark);
 app.get('/marks', MarkController.getAllMarks);
 app.get('/marks/:id', MarkController.getOne);
 app.get('/mark/:studentId/:ktpId', MarkController.getByStudentByKtp);
