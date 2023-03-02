@@ -50,6 +50,11 @@ app.post('/predmet', predmetValidation, handleValidationErrors, PredmetControlle
 app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
 
+/* Создание плана */
+app.post('/ktp');
+app.get('/ktp');
+app.get('/ktp/:id');
+
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
