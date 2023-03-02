@@ -29,3 +29,8 @@ export const registerStudentValidation = [
 export const classCreateValidation = [
   body('className', 'Введите название класса').isLength({ min: 2 }).isString(),
 ];
+
+export const predmetValidation = [
+  body('predmetName', 'Введите название предмета').isLength({ min: 2 }).isString(),
+  body('classes', 'Добавьте классы в предмет').isArray(),
+];

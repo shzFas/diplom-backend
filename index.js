@@ -46,7 +46,7 @@ app.get('/classList', ClassesController.getAllClasses);
 app.get('/classList/:id', ClassesController.getOne);
 
 /* Создание предмета */
-app.post('/predmet', PredmetController.createPredmet);
+app.post('/predmet', predmetValidation, handleValidationErrors, PredmetController.createPredmet);
 app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
 
