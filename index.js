@@ -40,6 +40,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 app.get('/students', StudentController.getAllStudents);
+app.get('/students/:classId', StudentController.getStudentsByClass);
 
 /* Создание класса */
 app.post('/classList', classCreateValidation, handleValidationErrors, ClassesController.createClasslist);

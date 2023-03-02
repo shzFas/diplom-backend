@@ -96,3 +96,19 @@ export const getAllStudents = async (req, res) => {
     });
   }
 };
+
+export const getStudentsByClass = async (req, res) => {
+  try {
+    const students = await StudentModel.find(
+      {
+        classId: req.params.classId,
+      },
+    ).exec();
+    res.json(students);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить список планов',
+    });
+  }
+};
