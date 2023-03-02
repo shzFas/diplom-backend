@@ -45,6 +45,11 @@ app.post('/classList', classCreateValidation, handleValidationErrors, ClassesCon
 app.get('/classList', ClassesController.getAllClasses);
 app.get('/classList/:id', ClassesController.getOne);
 
+/* Создание предмета */
+app.post('/predmet');
+app.get('/predmet');
+app.get('/predmet/:id');
+
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
