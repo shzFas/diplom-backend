@@ -4,7 +4,7 @@ import fs from 'fs';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { ClassesController, KtpController, PredmetController, StudentController, UserController } from './controllers/index.js';
-import { classCreateValidation, loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
+import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
