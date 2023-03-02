@@ -18,6 +18,10 @@ const MarkSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    markDate: {
+      type: String,
+      required: true,
+    },
     markFalse: {
       type: Boolean,
       required: true,
