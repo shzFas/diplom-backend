@@ -108,7 +108,46 @@ export const getStudentsByClass = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить список планов',
+      message: 'Не удалось получить список студентов по классу',
+    });
+  }
+};
+
+export const getOne = async (req, res) => {
+  try {
+    const student = req.params.id;
+
+    StudentModel.findOneAndUpdate(
+      {
+        _id: student,
+      },
+      {
+        $inc: { viewsCount: 1 },
+      },
+      {
+        returnDocument: 'after',
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: 'Не удалось вернуть студента',
+          });
+        }
+
+        if (!doc) {
+          return res.status(404).json({
+            message: 'Студент не найден',
+          });
+        }
+
+        res.json(doc);
+      },
+    )
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить студента',
     });
   }
 };
