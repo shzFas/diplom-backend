@@ -10,8 +10,17 @@ export const createKtp = async (req, res) => {
       ktpTeacher: req.body.ktpTeacher,
       ktpSorSoch: req.body.ktpSorSoch,
     });
-    const ktp = await doc.save();
-    res.json(ktp);
+    const { ktpPredmet, ktpClass, ktpDate } = req.body;
+    const ktpDB = await Ktp.find().exec();
+    const duplicates = ktpDB.filter(record => record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass && record.ktpDate === ktpDate);
+    if (duplicates.length > 0) {
+      res.status(400).json({
+        message: 'Уже есть такой КТП',
+      });
+    } else {
+      const ktp = await doc.save();
+      res.json(ktp);
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({

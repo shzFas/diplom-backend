@@ -8,7 +8,7 @@ import { classCreateValidation, ktpValidation, loginStudentValidation, loginVali
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
-  .connect(`mongodb+srv://admin:admin@diplom.nrvieje.mongodb.net/?retryWrites=true&w=majority`) /* поменял пароль */
+  .connect(``) /* поменял пароль */
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
