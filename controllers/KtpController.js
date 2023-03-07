@@ -76,6 +76,23 @@ export const getByClassByPredmet = async (req, res) => {
   }
 };
 
+export const getByMyClassByPredmet = async (req, res) => {
+  try {
+    const ktp = await Ktp.find(
+      {
+        ktpPredmet: req.params.predmetId,
+        ktpClass: req.params.classId,
+      },
+    ).exec();
+    res.json(ktp);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить список планов',
+    });
+  }
+};
+
 export const getAllKtp = async (req, res) => {
   try {
     const ktp = await Ktp.find().exec();

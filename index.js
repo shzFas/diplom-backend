@@ -8,7 +8,7 @@ import { classCreateValidation, ktpValidation, loginStudentValidation, loginVali
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 
 mongoose
-  .connect(``)
+  .connect(`mongodb+srv://admin:admin@diplom.nrvieje.mongodb.net/?retryWrites=true&w=majority`)
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
@@ -58,6 +58,7 @@ app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp)
 app.get('/ktp', KtpController.getAllKtp);
 app.get('/ktps/:id', KtpController.getOne);
 app.get('/ktp/:predmetId/:classId', KtpController.getByClassByPredmet);
+app.get('/ktps/my/:predmetId/:classId', KtpController.getByMyClassByPredmet);
 
 /* Оценки */
 app.post('/marks', markValidation, handleValidationErrors, MarkController.createMark);
