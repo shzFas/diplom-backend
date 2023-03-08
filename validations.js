@@ -51,5 +51,6 @@ export const markValidation = [
   body('markClassStudent', 'Введите id Класса').isLength({ min: 2 }).isString(),
   body('markDate', 'Введите id плана(дата урока его ID)').isLength({ min: 2 }).isString(),
   body('markFalse', 'true || false').isBoolean(),
-  body('markValue', 'от 0 до 10').isNumeric(),
+  body('markMaxValue', 'от 0 до 30').isNumeric(),
+  body('markValue', 'от 0 до 30').isNumeric(),
 ];
