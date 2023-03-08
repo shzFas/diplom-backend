@@ -26,6 +26,10 @@ const MarkSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    markMaxValue: {
+      type: Number,
+      required: true,
+    },
     markValue: {
       type: Number,
       required: true,
