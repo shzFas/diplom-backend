@@ -7,7 +7,6 @@ import { ClassesController, KtpController, MarkController, PredmetController, St
 import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, markValidation, predmetValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
 import dotenv from 'dotenv';
-import https from 'https';
 dotenv.config();
 
 mongoose
@@ -77,12 +76,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   });
 });
 
-const privateKey  = fs.readFileSync('./ssl/server.key', 'utf8');
-const certificate = fs.readFileSync('./ssl/server.crt', 'utf8');
-const credentials = {key: privateKey, cert: certificate}
-const httpsServer = https.createServer(credentials, app)
-
-httpsServer.app.listen(process.env.PORT || 4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
     return console.log(err);
   }
