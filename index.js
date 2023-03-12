@@ -6,9 +6,11 @@ import mongoose from 'mongoose';
 import { ClassesController, KtpController, MarkController, PredmetController, StudentController, UserController } from './controllers/index.js';
 import { classCreateValidation, ktpValidation, loginStudentValidation, loginValidation, markValidation, predmetValidation, registerStudentValidation, registerValidation } from './validations.js';
 import { handleValidationErrors, checkAuth } from './utils/index.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 mongoose
-  .connect(``) /* поменял пароль */
+  .connect(process.env.MONGODB_URI) /* поменял пароль */
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
