@@ -78,6 +78,23 @@ export const getByStudentByKtp = async (req, res) => {
   }
 };
 
+export const getByStudentByPredmet = async (req, res) => {
+  try {
+    const ktp = await Mark.find(
+      {
+        markStudent: req.params.studentId,
+        markPredmet: req.params.predmetId,
+      },
+    ).exec();
+    res.json(ktp);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить Оценки',
+    });
+  }
+};
+
 export const getAllMarks = async (req, res) => {
   try {
     const mark = await Mark.find().exec();
