@@ -85,6 +85,7 @@ export const getByStudentByPredmet = async (req, res) => {
       {
         markStudent: req.params.studentId,
         markPredmet: req.params.predmetId,
+        markSochSor: req.params.type,
       },
     ).exec();
     res.json(ktp);
