@@ -9,8 +9,9 @@ export const createMark = async (req, res) => {
       markClassStudent: req.body.markClassStudent,
       markDate: req.body.markDate,
       markFalse: req.body.markFalse,
-      markMaxValue: req.body.markValue,
+      markMaxValue: req.body.markMaxValue,
       markValue: req.body.markValue,
+      markSochSor: req.body.markSochSor,
     });
     const ktp = await doc.save();
     res.json(ktp);

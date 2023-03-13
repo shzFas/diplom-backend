@@ -33,7 +33,11 @@ const MarkSchema = new mongoose.Schema(
     markValue: {
       type: Number,
       required: true,
-    }
+    },
+    markSochSor: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

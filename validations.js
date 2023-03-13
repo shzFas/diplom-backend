@@ -42,6 +42,7 @@ export const ktpValidation = [
   body('ktpClass', 'Введите id Класса').isLength({ min: 2 }).isString(),
   body('ktpTeacher', 'Введите id Учителя').isLength({ min: 2 }).isString(),
   body('ktpSorSoch', 'Введите тип урока').isLength({ min: 2 }).isString(),
+  body('ktpMaxValue', 'Введите максимальный балл от 0 до 30').isNumeric(),
 ];
 
 export const markValidation = [
