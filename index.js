@@ -67,7 +67,7 @@ app.post('/marks', markValidation, handleValidationErrors, MarkController.create
 app.get('/marks', MarkController.getAllMarks);
 app.get('/marks/:id', MarkController.getOne);
 app.get('/mark/:studentId/:ktpId', MarkController.getByStudentByKtp);
-app.get('/mark/:studentId/:predmetId', MarkController.getByStudentByPredmet);
+app.get('/marks/final/:studentId/:predmetId', MarkController.getByStudentByPredmet);
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {

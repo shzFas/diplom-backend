@@ -9,6 +9,7 @@ export const createKtp = async (req, res, next) => {
       ktpClass: req.body.ktpClass,
       ktpTeacher: req.body.ktpTeacher,
       ktpSorSoch: req.body.ktpSorSoch,
+      ktpMaxValue: req.body.ktpMaxValue,
     });
     const { ktpPredmet, ktpClass, ktpDate } = req.body;
     const ktpDB = await Ktp.find().exec();

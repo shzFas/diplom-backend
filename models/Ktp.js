@@ -26,6 +26,10 @@ const KtpSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    ktpMaxValue: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
