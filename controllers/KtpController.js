@@ -1,6 +1,6 @@
 import Ktp from '../models/Ktp.js';
 
-export const createKtp = async (req, res) => {
+export const createKtp = async (req, res, next) => {
   try {
     const doc = new Ktp({
       ktpTitle: req.body.ktpTitle,
@@ -13,19 +13,23 @@ export const createKtp = async (req, res) => {
     const { ktpPredmet, ktpClass, ktpDate } = req.body;
     const ktpDB = await Ktp.find().exec();
     const duplicates = ktpDB.filter(record => record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass && record.ktpDate === ktpDate);
-    const duplicatesSOCH = ktpDB.filter(record => record.ktpSorSoch === "soch" && record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass);
     if (duplicates.length > 0) {
-      res.status(400).json({
+      res.status(500).json({
         message: 'Уже есть такой КТП',
       });
-    } else if (duplicatesSOCH.length > 0) {
-      res.status(400).json({
-        message: 'Не возможно создать больше 1 СОЧ',
-      });
-    } else {
-      const ktp = await doc.save();
-      res.json(ktp);
+      return next()
     }
+    if (req.body.ktpSorSoch === 'soch') {
+      const duplicatesSOCH = ktpDB.filter(record => record.ktpSorSoch === "soch" && record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass);
+      if (duplicatesSOCH.length > 0) {
+        res.status(500).json({
+          message: 'Не возможно создать больше 1 СОЧ',
+        });
+        return next()
+      }
+    }
+    const ktp = await doc.save();
+    res.json(ktp);
   } catch (err) {
     res.status(500).json({
       message: 'Не удалось создать план',
