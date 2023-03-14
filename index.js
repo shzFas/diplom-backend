@@ -66,6 +66,7 @@ app.get('/ktps/my/:predmetId/:classId', KtpController.getByMyClassByPredmet);
 app.post('/marks', markValidation, handleValidationErrors, MarkController.createMark);
 app.get('/marks', MarkController.getAllMarks);
 app.get('/marks/:id', MarkController.getOne);
+app.delete('/marks/:studentId/:ktpId', MarkController.deleteOne);
 app.get('/mark/:studentId/:ktpId', MarkController.getByStudentByKtp);
 app.get('/marks/final/:studentId/:predmetId/:type', MarkController.getByStudentByPredmet);
 

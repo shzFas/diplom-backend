@@ -129,7 +129,6 @@ export const getOne = async (req, res) => {
       },
       (err, doc) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
             message: 'Не удалось вернуть студента',
           });
@@ -145,7 +144,6 @@ export const getOne = async (req, res) => {
       },
     )
   } catch (err) {
-    console.log(err);
     res.status(500).json({
       message: 'Не удалось получить студента',
     });

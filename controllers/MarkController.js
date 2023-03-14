@@ -108,3 +108,40 @@ export const getAllMarks = async (req, res) => {
     });
   }
 };
+
+export const deleteOne = async (req, res) => {
+  try {
+    const markStudentId = req.params.studentId;
+    const markKtpId = req.params.ktpId;
+
+    Mark.findOneAndDelete(
+      {
+        markStudent: markStudentId,
+        markDate: markKtpId,
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: 'Не удалось удалить оценку',
+          });
+        }
+
+        if (!doc) {
+          return res.status(404).json({
+            message: 'Оценка не найдена',
+          });
+        }
+
+        res.json({
+          success: true,
+        });
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить оценку',
+    });
+  }
+};
