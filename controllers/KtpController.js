@@ -10,8 +10,9 @@ export const createKtp = async (req, res, next) => {
       ktpTeacher: req.body.ktpTeacher,
       ktpSorSoch: req.body.ktpSorSoch,
       ktpMaxValue: req.body.ktpMaxValue,
+      ktpPeriod: req.body.ktpPeriod,
     });
-    const { ktpPredmet, ktpClass, ktpDate } = req.body;
+    const { ktpPredmet, ktpClass, ktpDate, ktpPeriod } = req.body;
     const ktpDB = await Ktp.find().exec();
     const duplicates = ktpDB.filter(record => record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass && record.ktpDate === ktpDate);
     if (duplicates.length > 0) {
@@ -21,10 +22,10 @@ export const createKtp = async (req, res, next) => {
       return next()
     }
     if (req.body.ktpSorSoch === 'soch') {
-      const duplicatesSOCH = ktpDB.filter(record => record.ktpSorSoch === "soch" && record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass);
+      const duplicatesSOCH = ktpDB.filter(record => record.ktpSorSoch === "soch" && record.ktpPredmet === ktpPredmet && record.ktpClass === ktpClass && record.ktpPeriod === ktpPeriod);
       if (duplicatesSOCH.length > 0) {
         res.status(500).json({
-          message: 'Не возможно создать больше 1 СОЧ',
+          message: 'Не возможно создать больше 1 СОЧ в четверти',
         });
         return next()
       }
@@ -114,6 +115,24 @@ export const getByMyClassByPredmet = async (req, res) => {
 export const getAllKtp = async (req, res) => {
   try {
     const ktp = await Ktp.find().exec();
+    res.json(ktp);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить список планов',
+    });
+  }
+};
+
+export const getPeriod = async (req, res) => {
+  try {
+    const ktp = await Ktp.find(
+      {
+        ktpPredmet: req.params.predmetId,
+        ktpPeriod: req.params.period,
+        ktpClass: req.params.classId,
+      },
+    ).exec();
     res.json(ktp);
   } catch (err) {
     console.log(err);
