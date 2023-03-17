@@ -59,6 +59,7 @@ app.get('/predmet/:id', PredmetController.getOne);
 /* Создание плана */
 app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
 app.get('/ktp', KtpController.getAllKtp);
+app.get('/ktp/period/:classId/:period/:predmetId', KtpController.getPeriod);
 app.get('/ktps/:id', KtpController.getOne);
 app.get('/ktp/:predmetId/:classId', KtpController.getByClassByPredmet);
 app.get('/ktps/my/:predmetId/:classId', KtpController.getByMyClassByPredmet);

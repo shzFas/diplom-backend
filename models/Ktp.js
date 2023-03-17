@@ -30,6 +30,10 @@ const KtpSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    ktpPeriod: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
