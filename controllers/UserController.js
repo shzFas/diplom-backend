@@ -85,6 +85,18 @@ export const login = async (req, res) => {
   }
 };
 
+export const getAllTeacher = async (req, res) => {
+  try {
+    const teachers = await UserModel.find().exec();
+    res.json(teachers);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить список учителей',
+    });
+  }
+};
+
 export const getMe = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId);

@@ -37,6 +37,7 @@ app.use('/uploads', express.static('uploads'));
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+app.get('/teacher', UserController.getAllTeacher);
 
 /* Регистрация Студента */
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
