@@ -38,6 +38,10 @@ const MarkSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    markPeriod: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,

@@ -12,6 +12,7 @@ export const createMark = async (req, res) => {
       markMaxValue: req.body.markMaxValue,
       markValue: req.body.markValue,
       markSochSor: req.body.markSochSor,
+      markPeriod: req.body.markPeriod,
     });
     const ktp = await doc.save();
     res.json(ktp);
@@ -86,6 +87,7 @@ export const getByStudentByPredmet = async (req, res) => {
         markStudent: req.params.studentId,
         markPredmet: req.params.predmetId,
         markSochSor: req.params.type,
+        markPeriod: req.params.period,
       },
     ).exec();
     res.json(ktp);
