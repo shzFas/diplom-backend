@@ -70,7 +70,7 @@ app.get('/marks', MarkController.getAllMarks);
 app.get('/marks/:id', MarkController.getOne);
 app.delete('/marks/:studentId/:ktpId', MarkController.deleteOne);
 app.get('/mark/:studentId/:ktpId', MarkController.getByStudentByKtp);
-app.get('/marks/final/:studentId/:predmetId/:type', MarkController.getByStudentByPredmet);
+app.get('/marks/final/:studentId/:predmetId/:type/:period', MarkController.getByStudentByPredmet);
 
 /* Загрузка изображений на сервер */
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {

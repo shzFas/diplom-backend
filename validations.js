@@ -55,4 +55,5 @@ export const markValidation = [
   body('markFalse', 'true || false').isBoolean(),
   body('markMaxValue', 'от 0 до 30').isNumeric(),
   body('markValue', 'от 0 до 30').isNumeric(),
+  body('markPeriod', 'Укажите четверть').isLength({ max: 1 }).isString(),
 ];
