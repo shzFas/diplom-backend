@@ -42,6 +42,7 @@ app.get('/teacher', UserController.getAllTeacher);
 /* Регистрация Студента */
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
+app.get('/auth/student/me', checkAuth, StudentController.getMe);
 app.get('/students', StudentController.getAllStudents);
 app.get('/student/:id', StudentController.getOne);
 app.get('/students/:classId', StudentController.getStudentsByClass);
