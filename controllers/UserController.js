@@ -117,3 +117,29 @@ export const getMe = async (req, res) => {
     });
   }
 };
+
+export const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.params._id;
+  try {
+    const user = await UserModel.findById(userId);
+
+    const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isOldPasswordCorrect) {
+      return res.status(400).json({ message: 'Не верный пароль' });
+    }
+    if(newPassword.length < 5) {
+      return res.status(400).json({ message: 'Пароль должен быть больше 5 символов' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+    user.passwordHash = newPasswordHash;
+    await user.save();
+    res.status(200).json({ message: "Пароль изменен"})
+  }
+  catch(error) {
+    res.status(500).json({ message: 'Не возможно изменить пароль' });
+  }
+}
