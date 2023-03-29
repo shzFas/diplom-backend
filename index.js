@@ -37,12 +37,14 @@ app.use('/uploads', express.static('uploads'));
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+app.post('/auth/change-password/teacher/:_id', checkAuth, UserController.changePassword);
 app.get('/teacher', UserController.getAllTeacher);
 
 /* Регистрация Студента */
 app.post('/auth/loginStudent', loginStudentValidation, handleValidationErrors, StudentController.login);
 app.post('/auth/registerStudent', registerStudentValidation, handleValidationErrors, StudentController.register);
 app.get('/auth/student/me', checkAuth, StudentController.getMe);
+app.post('/auth/change-password/student/:_id', checkAuth, StudentController.changePassword);
 app.get('/students', StudentController.getAllStudents);
 app.get('/student/:id', StudentController.getOne);
 app.get('/students/:classId', StudentController.getStudentsByClass);
