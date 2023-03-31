@@ -71,9 +71,7 @@ export const getByStudentByKtp = async (req, res) => {
         markDate: req.params.ktpId,
       },
     ).exec();
-    if(ktp.length >= 1) {
-      res.json(ktp);
-    }
+    res.json(ktp);
   } catch (err) {
     console.log(err);
     res.status(500).json({
