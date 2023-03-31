@@ -58,6 +58,8 @@ app.get('/classList/:id', ClassesController.getOne);
 app.post('/predmet', predmetValidation, handleValidationErrors, PredmetController.createPredmet);
 app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
+app.put('/predmet/:predmetId', PredmetController.addClasses);
+app.delete('/predmet/:predmetId/:classId', PredmetController.deleteClassPredmet)
 
 /* Создание плана */
 app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
