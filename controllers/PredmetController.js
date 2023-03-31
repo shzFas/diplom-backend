@@ -118,3 +118,19 @@ export const deleteClassPredmet = async (req, res) => {
     return res.status(500).json({ message: 'Ошибка сервера' });
   }
 }
+
+export const deletePredmetById = async (req, res) => {
+  const predmetId = req.params.predmetId;
+
+  try {
+    const deletedPredmet = await Predmet.findByIdAndDelete(predmetId);
+
+    if (!deletedPredmet) {
+      return res.status(404).json({ message: 'Предмет не найден' });
+    }
+
+    res.status(200).json({ message: 'Предмет удален успешно' });
+  } catch (error) {
+    res.status(500).json({ message: 'Не удалось удалить предмет', error });
+  }
+};
