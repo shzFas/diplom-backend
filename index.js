@@ -59,7 +59,8 @@ app.post('/predmet', predmetValidation, handleValidationErrors, PredmetControlle
 app.get('/predmet', PredmetController.getAllPredmets);
 app.get('/predmet/:id', PredmetController.getOne);
 app.put('/predmet/:predmetId', PredmetController.addClasses);
-app.delete('/predmet/:predmetId/:classId', PredmetController.deleteClassPredmet)
+app.delete('/predmet/:predmetId/:classId', PredmetController.deleteClassPredmet);
+app.delete('/delete/predmet/:predmetId', PredmetController.deletePredmetById);
 
 /* Создание плана */
 app.post('/ktp', ktpValidation, handleValidationErrors, KtpController.createKtp);
