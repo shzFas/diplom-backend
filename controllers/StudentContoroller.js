@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-import StudentModel from '../models/Student.js';
+import StudentModel from "../models/Student.js";
 
 export const register = async (req, res) => {
   try {
@@ -23,10 +23,10 @@ export const register = async (req, res) => {
       {
         _id: user._id,
       },
-      'secret123',
+      "secret123",
       {
-        expiresIn: '30d',
-      },
+        expiresIn: "30d",
+      }
     );
 
     const { passwordHash, ...userData } = user._doc;
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось зарегистрироваться',
+      message: "Не удалось зарегистрироваться",
     });
   }
 };
@@ -49,15 +49,18 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: 'Пользователь не найден',
+        message: "Пользователь не найден",
       });
     }
 
-    const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
+    const isValidPass = await bcrypt.compare(
+      req.body.password,
+      user._doc.passwordHash
+    );
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: 'Неверный логин или пароль',
+        message: "Неверный логин или пароль",
       });
     }
 
@@ -65,10 +68,10 @@ export const login = async (req, res) => {
       {
         _id: user._id,
       },
-      'secret123',
+      "secret123",
       {
-        expiresIn: '30d',
-      },
+        expiresIn: "30d",
+      }
     );
 
     const { passwordHash, ...userData } = user._doc;
@@ -80,7 +83,7 @@ export const login = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось авторизоваться',
+      message: "Не удалось авторизоваться",
     });
   }
 };
@@ -91,7 +94,7 @@ export const getMe = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: 'Студент не найден',
+        message: "Студент не найден",
       });
     }
 
@@ -101,7 +104,7 @@ export const getMe = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Нет доступа',
+      message: "Нет доступа",
     });
   }
 };
@@ -112,12 +115,17 @@ export const changePassword = async (req, res) => {
   try {
     const user = await StudentModel.findById(userId);
 
-    const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.passwordHash);
+    const isOldPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      user.passwordHash
+    );
     if (!isOldPasswordCorrect) {
-      return res.status(400).json({ message: 'Не верный пароль' });
+      return res.status(400).json({ message: "Не верный пароль" });
     }
-    if(newPassword.length < 5) {
-      return res.status(400).json({ message: 'Пароль должен быть больше 5 символов' });
+    if (newPassword.length < 5) {
+      return res
+        .status(400)
+        .json({ message: "Пароль должен быть больше 5 символов" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -125,12 +133,11 @@ export const changePassword = async (req, res) => {
 
     user.passwordHash = newPasswordHash;
     await user.save();
-    res.status(200).json({ message: "Пароль изменен"})
+    res.status(200).json({ message: "Пароль изменен" });
+  } catch (error) {
+    res.status(500).json({ message: "Не возможно изменить пароль" });
   }
-  catch(error) {
-    res.status(500).json({ message: 'Не возможно изменить пароль' });
-  }
-}
+};
 
 export const getAllStudents = async (req, res) => {
   try {
@@ -139,23 +146,21 @@ export const getAllStudents = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить студентов',
+      message: "Не удалось получить студентов",
     });
   }
 };
 
 export const getStudentsByClass = async (req, res) => {
   try {
-    const students = await StudentModel.find(
-      {
-        classId: req.params.classId,
-      },
-    ).exec();
+    const students = await StudentModel.find({
+      classId: req.params.classId,
+    }).exec();
     res.json(students);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить список студентов по классу',
+      message: "Не удалось получить список студентов по классу",
     });
   }
 };
@@ -172,27 +177,54 @@ export const getOne = async (req, res) => {
         $inc: { viewsCount: 1 },
       },
       {
-        returnDocument: 'after',
+        returnDocument: "after",
       },
       (err, doc) => {
         if (err) {
           return res.status(500).json({
-            message: 'Не удалось вернуть студента',
+            message: "Не удалось вернуть студента",
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: 'Студент не найден',
+            message: "Студент не найден",
           });
         }
 
         res.json(doc);
-      },
-    )
+      }
+    );
   } catch (err) {
     res.status(500).json({
-      message: 'Не удалось получить студента',
+      message: "Не удалось получить студента",
     });
+  }
+};
+
+export const deleteStudent = async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    await StudentModel.findByIdAndRemove(studentId);
+    res.status(204).json({ message: "Студент отчислен" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+};
+
+export const changeClassStudent = async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const { classId } = req.body;
+    const updatedStudent = await StudentModel.findByIdAndUpdate(
+      studentId,
+      { classId },
+      { new: true }
+    );
+    res.status(200).json(updatedStudent);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка сервера" });
   }
 };
