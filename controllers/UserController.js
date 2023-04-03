@@ -243,3 +243,14 @@ export const addPermission = async (req, res) => {
     return res.status(500).json({ message: "Ошибка сервера" });
   }
 };
+
+export const deleteTeacher = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await UserModel.findByIdAndRemove(id);
+    res.status(204).json({ message: "Учитель уволен" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+};
