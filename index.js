@@ -69,6 +69,10 @@ app.post(
   UserController.changePassword
 );
 app.get("/teacher", UserController.getAllTeacher);
+app.get("/teacher/:id", UserController.getOne);
+app.delete("/teacher/:id/:permissionId", UserController.deleteClassPredmet);
+app.put("/teacher/:id", UserController.addPermission);
+app.delete("/teacher/delete/:id", UserController.deleteTeacher);
 
 /* Регистрация Студента */
 app.post(
