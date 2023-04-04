@@ -137,6 +137,7 @@ app.get("/ktp/period/:classId/:period/:predmetId", KtpController.getPeriod);
 app.get("/ktps/:id", KtpController.getOne);
 app.get("/ktp/:predmetId/:classId", KtpController.getByClassByPredmet);
 app.get("/ktps/my/:predmetId/:classId", KtpController.getByMyClassByPredmet);
+app.delete("/ktp/:id", KtpController.deleteKtpMark);
 
 /* Оценки */
 app.post(
