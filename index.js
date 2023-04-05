@@ -124,6 +124,7 @@ app.delete(
   PredmetController.deleteClassPredmet
 );
 app.delete("/delete/predmet/:predmetId", PredmetController.deletePredmetById);
+app.get("/predmet/class/:id", PredmetController.getPredmetByClass);
 
 /* Создание плана */
 app.post(
