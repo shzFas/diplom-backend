@@ -139,10 +139,10 @@ export const getPredmetByClass = async (req, res) => {
   const classId = req.params.id
 
   try {
-    const predmet = await Predmet.findById(classId);
-    const classes = predmet.classes.filter(c => c._id == req.query.classId);
-    res.json(classes);
+    const predmets = await Predmet.find({'classes._id': classId});
+    res.status(200).json(predmets);
   } catch (err) {
-    res.status(500).send(err);
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
