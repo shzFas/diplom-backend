@@ -134,3 +134,15 @@ export const deletePredmetById = async (req, res) => {
     res.status(500).json({ message: 'Не удалось удалить предмет', error });
   }
 };
+
+export const getPredmetByClass = async (req, res) => {
+  const classId = req.params.id
+
+  try {
+    const predmet = await Predmet.findById(classId);
+    const classes = predmet.classes.filter(c => c._id == req.query.classId);
+    res.json(classes);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
