@@ -155,6 +155,10 @@ app.get(
   "/marks/final/:studentId/:predmetId/:type/:period",
   MarkController.getByStudentByPredmet
 );
+app.get(
+  "/marks/all/:studentId/:predmetId/:period",
+  MarkController.getAllMarkStudent
+);
 
 /* Загрузка изображений на сервер */
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
