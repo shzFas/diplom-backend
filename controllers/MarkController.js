@@ -1,4 +1,4 @@
-import Mark from '../models/Mark.js';
+import Mark from "../models/Mark.js";
 
 export const createMark = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ export const createMark = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось поставить оценку',
+      message: "Не удалось поставить оценку",
     });
   }
 };
@@ -36,65 +36,61 @@ export const getOne = async (req, res) => {
         $inc: { viewsCount: 1 },
       },
       {
-        returnDocument: 'after',
+        returnDocument: "after",
       },
       (err, doc) => {
         if (err) {
           console.log(err);
           return res.status(500).json({
-            message: 'Не удалось вернуть оценку',
+            message: "Не удалось вернуть оценку",
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: 'Оценка не найдена',
+            message: "Оценка не найдена",
           });
         }
 
         res.json(doc);
-      },
-    )
+      }
+    );
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить оценку',
+      message: "Не удалось получить оценку",
     });
   }
 };
 
 export const getByStudentByKtp = async (req, res) => {
   try {
-    const ktp = await Mark.find(
-      {
-        markStudent: req.params.studentId,
-        markDate: req.params.ktpId,
-      },
-    ).exec();
+    const ktp = await Mark.find({
+      markStudent: req.params.studentId,
+      markDate: req.params.ktpId,
+    }).exec();
     res.json(ktp);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить Оценку',
+      message: "Не удалось получить Оценку",
     });
   }
 };
 
 export const getByStudentByPredmet = async (req, res) => {
   try {
-    const ktp = await Mark.find(
-      {
-        markStudent: req.params.studentId,
-        markPredmet: req.params.predmetId,
-        markSochSor: req.params.type,
-        markPeriod: req.params.period,
-      },
-    ).exec();
+    const ktp = await Mark.find({
+      markStudent: req.params.studentId,
+      markPredmet: req.params.predmetId,
+      markSochSor: req.params.type,
+      markPeriod: req.params.period,
+    }).exec();
     res.json(ktp);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить Оценки',
+      message: "Не удалось получить Оценки",
     });
   }
 };
@@ -106,7 +102,7 @@ export const getAllMarks = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить список оценок',
+      message: "Не удалось получить список оценок",
     });
   }
 };
@@ -125,25 +121,41 @@ export const deleteOne = async (req, res) => {
         if (err) {
           console.log(err);
           return res.status(500).json({
-            message: 'Не удалось удалить оценку',
+            message: "Не удалось удалить оценку",
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: 'Оценка не найдена',
+            message: "Оценка не найдена",
           });
         }
 
         res.json({
           success: true,
         });
-      },
+      }
     );
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить оценку',
+      message: "Не удалось получить оценку",
+    });
+  }
+};
+
+export const getAllMarkStudent = async (req, res) => {
+  try {
+    const ktp = await Mark.find({
+      markStudent: req.params.studentId,
+      markPredmet: req.params.predmetId,
+      markPeriod: req.params.period,
+    }).exec();
+    res.json(ktp);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить Оценки",
     });
   }
 };
