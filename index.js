@@ -23,6 +23,8 @@ import {
 } from "./validations.js";
 import { handleValidationErrors, checkAuth } from "./utils/index.js";
 import dotenv from "dotenv";
+import i18n from "i18n";
+import path from "path";
 dotenv.config();
 
 mongoose
@@ -48,6 +50,19 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
+
+app.use(function(req, res, next){
+  i18n.setLocale(req.query.lang);
+  next();
+})
+
+i18n.configure({
+  locales: ["ru", "kaz"],
+  directory: path.join("./", "locales"),
+  defaultLocale: "ru",
+});
+
+app.use(i18n.init);
 
 /* Регистрация учителя */
 app.post(

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
+import i18n from "i18n";
 import StudentModel from "../models/Student.js";
 
 export const register = async (req, res) => {
@@ -36,9 +36,8 @@ export const register = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось зарегистрироваться",
+      message: i18n.__("registerFailed"),
     });
   }
 };
@@ -49,7 +48,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Пользователь не найден",
+        message: i18n.__("userNotFound"),
       });
     }
 
@@ -60,7 +59,7 @@ export const login = async (req, res) => {
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: "Неверный логин или пароль",
+        message: i18n.__("loginPasswordFailed"),
       });
     }
 
@@ -81,9 +80,8 @@ export const login = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось авторизоваться",
+      message: i18n.__("loginFailed"),
     });
   }
 };
@@ -94,7 +92,7 @@ export const getMe = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Студент не найден",
+        message: i18n.__("studentError"),
       });
     }
 
@@ -102,9 +100,8 @@ export const getMe = async (req, res) => {
 
     res.json(userData);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Нет доступа",
+      message: i18n.__("not"),
     });
   }
 };
@@ -120,12 +117,10 @@ export const changePassword = async (req, res) => {
       user.passwordHash
     );
     if (!isOldPasswordCorrect) {
-      return res.status(400).json({ message: "Не верный пароль" });
+      return res.status(400).json({ message: i18n.__("passwordWrong") });
     }
     if (newPassword.length < 5) {
-      return res
-        .status(400)
-        .json({ message: "Пароль должен быть больше 5 символов" });
+      return res.status(400).json({ message: i18n.__("passwordChangeValid") });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -133,9 +128,9 @@ export const changePassword = async (req, res) => {
 
     user.passwordHash = newPasswordHash;
     await user.save();
-    res.status(200).json({ message: "Пароль изменен" });
+    res.status(200).json({ message: i18n.__("passwordChange") });
   } catch (error) {
-    res.status(500).json({ message: "Не возможно изменить пароль" });
+    res.status(500).json({ message: i18n.__("passwordChangeError") });
   }
 };
 
@@ -144,9 +139,8 @@ export const getAllStudents = async (req, res) => {
     const students = await StudentModel.find().exec();
     res.json(students);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить студентов",
+      message: i18n.__("studentListError"),
     });
   }
 };
@@ -158,9 +152,8 @@ export const getStudentsByClass = async (req, res) => {
     }).exec();
     res.json(students);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список студентов по классу",
+      message: i18n.__("studentsListByClass"),
     });
   }
 };
@@ -182,13 +175,13 @@ export const getOne = async (req, res) => {
       (err, doc) => {
         if (err) {
           return res.status(500).json({
-            message: "Не удалось вернуть студента",
+            message: i18n.__("studentError"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: "Студент не найден",
+            message: i18n.__("studentError"),
           });
         }
 
@@ -197,7 +190,7 @@ export const getOne = async (req, res) => {
     );
   } catch (err) {
     res.status(500).json({
-      message: "Не удалось получить студента",
+      message: i18n.__("serverError"),
     });
   }
 };
@@ -206,10 +199,9 @@ export const deleteStudent = async (req, res) => {
   try {
     const studentId = req.params.id;
     await StudentModel.findByIdAndRemove(studentId);
-    res.status(204).json({ message: "Студент отчислен" });
+    res.status(204).json({ message: i18n.__("studentDelete") });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Ошибка сервера" });
+    res.status(500).json({ message: i18n.__("serverError") });
   }
 };
 
@@ -224,7 +216,6 @@ export const changeClassStudent = async (req, res) => {
     );
     res.status(200).json(updatedStudent);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Ошибка сервера" });
+    res.status(500).json({ message: i18n.__("serverError") });
   }
 };
