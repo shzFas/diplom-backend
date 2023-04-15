@@ -242,7 +242,7 @@ export const deleteTeacher = async (req, res) => {
   try {
     const id = req.params.id;
     await UserModel.findByIdAndRemove(id);
-    res.status(204).json({ message: i18n.__("teacherDelete") });
+    res.status(200).json({ message: i18n.__("teacherDelete") });
   } catch (error) {
     res.status(500).json({ message: i18n.__("serverError") });
   }

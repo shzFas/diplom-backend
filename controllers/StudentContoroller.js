@@ -199,7 +199,7 @@ export const deleteStudent = async (req, res) => {
   try {
     const studentId = req.params.id;
     await StudentModel.findByIdAndRemove(studentId);
-    res.status(204).json({ message: i18n.__("studentDelete") });
+    res.status(200).json({ message: i18n.__("studentDelete") });
   } catch (error) {
     res.status(500).json({ message: i18n.__("serverError") });
   }
