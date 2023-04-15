@@ -1,4 +1,5 @@
-import Predmet from '../models/Predmet.js';
+import i18n from "i18n";
+import Predmet from "../models/Predmet.js";
 
 export const createPredmet = async (req, res) => {
   try {
@@ -6,12 +7,13 @@ export const createPredmet = async (req, res) => {
       predmetName: req.body.predmetName,
       classes: req.body.classes,
     });
-    const predmet = await doc.save();
-    res.json(predmet);
+    await doc.save();
+    res.status(200).json({
+      message: i18n.__("subjectCreateSuccess"),
+    });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: 'Не удалось создать предмет',
+      message: i18n.__("subjectCreateFailed"),
     });
   }
 };
@@ -28,29 +30,27 @@ export const getOne = async (req, res) => {
         $inc: { viewsCount: 1 },
       },
       {
-        returnDocument: 'after',
+        returnDocument: "after",
       },
       (err, doc) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
-            message: 'Не удалось вернуть предмет',
+            message: i18n.__("subjectReturnFailed"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: 'Предметы не найдены',
+            message: i18n.__("subjectsNotFound"),
           });
         }
 
         res.json(doc);
-      },
-    )
+      }
+    );
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить список предмета',
+      message: i18n.__("subjectListGetFailed"),
     });
   }
 };
@@ -60,9 +60,8 @@ export const getAllPredmets = async (req, res) => {
     const predmet = await Predmet.find().exec();
     res.json(predmet);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить список предметов',
+      message: i18n.__("subjectAllListGetFailed"),
     });
   }
 };
@@ -73,24 +72,25 @@ export const addClasses = async (req, res) => {
 
   try {
     const predmet = await Predmet.findById(id);
-    
+
     if (!predmet) {
-      return res.status(404).json({ message: 'Предмет не найден' });
+      return res.status(404).json({ message: i18n.__("subjectNotFound") });
     }
 
-    const newClasses = classes.filter((c) => !predmet.classes.some((pc) => pc._id === c._id));
+    const newClasses = classes.filter(
+      (c) => !predmet.classes.some((pc) => pc._id === c._id)
+    );
 
     if (newClasses.length === 0) {
-      return res.json({ message: 'Новые классы не добавлены' });
+      return res.json({ message: i18n.__("subjectNewClassesNotAdded") });
     }
 
     predmet.classes.push(...newClasses);
     await predmet.save();
 
-    return res.json({ message: 'Классы успешно добавлены' });
+    return res.json({ message: i18n.__("subjectClassesSuccessfullyAdded") });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    return res.status(500).json({ message: i18n.__("serverError") });
   }
 };
 
@@ -101,23 +101,22 @@ export const deleteClassPredmet = async (req, res) => {
     const predmet = await Predmet.findById(predmetId);
 
     if (!predmet) {
-      return res.status(404).json({ message: 'Класс не найден' });
+      return res.status(404).json({ message: i18n.__("classFindError") });
     }
-    const classIndex = predmet.classes.findIndex(data => data._id == classId);
+    const classIndex = predmet.classes.findIndex((data) => data._id == classId);
 
     if (classIndex === -1) {
-      return res.status(404).json({ error: 'Класс не найден' });
+      return res.status(404).json({ error: i18n.__("classFindError") });
     }
 
     predmet.classes.splice(classIndex, 1);
     await predmet.save();
 
-    res.status(200).json({ message: 'Класс удален' });
+    res.status(200).json({ message: i18n.__("subjectClassDeleted") });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    return res.status(500).json({ message: i18n.__("serverError") });
   }
-}
+};
 
 export const deletePredmetById = async (req, res) => {
   const predmetId = req.params.predmetId;
@@ -126,23 +125,22 @@ export const deletePredmetById = async (req, res) => {
     const deletedPredmet = await Predmet.findByIdAndDelete(predmetId);
 
     if (!deletedPredmet) {
-      return res.status(404).json({ message: 'Предмет не найден' });
+      return res.status(404).json({ message: i18n.__("subjectNotFound") });
     }
 
-    res.status(200).json({ message: 'Предмет удален успешно' });
+    res.status(200).json({ message: i18n.__("subjectDeletedSuccessfully") });
   } catch (error) {
-    res.status(500).json({ message: 'Не удалось удалить предмет', error });
+    res.status(500).json({ message: i18n.__("subjectDeletionFailed"), error });
   }
 };
 
 export const getPredmetByClass = async (req, res) => {
-  const classId = req.params.id
+  const classId = req.params.id;
 
   try {
-    const predmets = await Predmet.find({'classes._id': classId});
+    const predmets = await Predmet.find({ "classes._id": classId });
     res.status(200).json(predmets);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: i18n.__("serverError") });
   }
 };

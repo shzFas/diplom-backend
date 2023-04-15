@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
+import i18n from "i18n";
 import UserModel from "../models/User.js";
 
 export const register = async (req, res) => {
@@ -36,9 +36,8 @@ export const register = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось зарегистрироваться",
+      message: i18n.__("registerFailed"),
     });
   }
 };
@@ -49,7 +48,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Пользователь не найден",
+        message: i18n.__("userNotFound"),
       });
     }
 
@@ -60,7 +59,7 @@ export const login = async (req, res) => {
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: "Неверный логин или пароль",
+        message: i18n.__("loginPasswordFailed"),
       });
     }
 
@@ -81,9 +80,8 @@ export const login = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось авторизоваться",
+      message: i18n.__("loginFailed"),
     });
   }
 };
@@ -93,9 +91,8 @@ export const getAllTeacher = async (req, res) => {
     const teachers = await UserModel.find().exec();
     res.json(teachers);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список учителей",
+      message: i18n.__("teacherListGetError"),
     });
   }
 };
@@ -106,7 +103,7 @@ export const getMe = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Пользователь не найден",
+        message: i18n.__("userNotFound"),
       });
     }
 
@@ -114,9 +111,8 @@ export const getMe = async (req, res) => {
 
     res.json(userData);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Нет доступа",
+      message: i18n.__("not"),
     });
   }
 };
@@ -132,12 +128,10 @@ export const changePassword = async (req, res) => {
       user.passwordHash
     );
     if (!isOldPasswordCorrect) {
-      return res.status(400).json({ message: "Не верный пароль" });
+      return res.status(400).json({ message: i18n.__("passwordWrong") });
     }
     if (newPassword.length < 5) {
-      return res
-        .status(400)
-        .json({ message: "Пароль должен быть больше 5 символов" });
+      return res.status(400).json({ message: i18n.__("passwordChangeValid") });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -145,9 +139,9 @@ export const changePassword = async (req, res) => {
 
     user.passwordHash = newPasswordHash;
     await user.save();
-    res.status(200).json({ message: "Пароль изменен" });
+    res.status(200).json({ message: i18n.__("passwordChange") });
   } catch (error) {
-    res.status(500).json({ message: "Не возможно изменить пароль" });
+    res.status(500).json({ message: i18n.__("passwordChangeError") });
   }
 };
 
@@ -168,13 +162,13 @@ export const getOne = async (req, res) => {
       (err, doc) => {
         if (err) {
           return res.status(500).json({
-            message: "Не удалось вернуть учителя",
+            message: i18n.__("teacherError"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: "Учитель не найден",
+            message: i18n.__("teacherError"),
           });
         }
 
@@ -183,7 +177,7 @@ export const getOne = async (req, res) => {
     );
   } catch (err) {
     res.status(500).json({
-      message: "Не удалось получить учителя",
+      message: i18n.__("teacherError"),
     });
   }
 };
@@ -195,23 +189,22 @@ export const deleteClassPredmet = async (req, res) => {
     const teacher = await UserModel.findById(id);
 
     if (!teacher) {
-      return res.status(404).json({ message: "Учитель не найден" });
+      return res.status(404).json({ message: i18n.__("teacherError") });
     }
     const permissionIndex = teacher.permission.findIndex(
       (data) => data._id == permissionId
     );
 
     if (permissionIndex === -1) {
-      return res.status(404).json({ error: "Предмет не найден" });
+      return res.status(404).json({ error: i18n.__("subjectNotFound") });
     }
 
     teacher.permission.splice(permissionIndex, 1);
     await teacher.save();
 
-    res.status(200).json({ message: "Предмет удален" });
+    res.status(200).json({ message: i18n.__("subjectDeletedSuccessfully") });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Ошибка сервера" });
+    return res.status(500).json({ message: i18n.__("serverError") });
   }
 };
 
@@ -223,7 +216,7 @@ export const addPermission = async (req, res) => {
     const teacher = await UserModel.findById(id);
 
     if (!teacher) {
-      return res.status(404).json({ message: "Учитель не найден" });
+      return res.status(404).json({ message: i18n.__("teacherError") });
     }
 
     const newPermission = permission.filter(
@@ -231,16 +224,17 @@ export const addPermission = async (req, res) => {
     );
 
     if (newPermission.length === 0) {
-      return res.json({ message: "Новые предметы не добавлены" });
+      return res.json({ message: i18n.__("subjectTeacherCreateErrorAdd") });
     }
 
     teacher.permission.push(...newPermission);
     await teacher.save();
 
-    return res.json({ message: "Предметы успешно добавлены" });
+    return res.json({
+      message: i18n.__("subjectTeacherCreateSuccefullyAdded"),
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Ошибка сервера" });
+    return res.status(500).json({ message: i18n.__("serverError") });
   }
 };
 
@@ -248,9 +242,8 @@ export const deleteTeacher = async (req, res) => {
   try {
     const id = req.params.id;
     await UserModel.findByIdAndRemove(id);
-    res.status(204).json({ message: "Учитель уволен" });
+    res.status(204).json({ message: i18n.__("teacherDelete") });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Ошибка сервера" });
+    res.status(500).json({ message: i18n.__("serverError") });
   }
 };

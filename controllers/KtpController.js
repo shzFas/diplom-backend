@@ -1,5 +1,6 @@
 import Ktp from "../models/Ktp.js";
 import Mark from "../models/Mark.js";
+import i18n from "i18n";
 
 export const createKtp = async (req, res, next) => {
   try {
@@ -23,7 +24,7 @@ export const createKtp = async (req, res, next) => {
     );
     if (duplicates.length > 0) {
       res.status(500).json({
-        message: "Уже есть такой КТП",
+        message: i18n.__("ktpHaveError"),
       });
       return next();
     }
@@ -37,16 +38,18 @@ export const createKtp = async (req, res, next) => {
       );
       if (duplicatesSOCH.length > 0) {
         res.status(500).json({
-          message: "Не возможно создать больше 1 СОЧ в четверти",
+          message: i18n.__("ktpMessageErrorSOCH"),
         });
         return next();
       }
     }
-    const ktp = await doc.save();
-    res.json(ktp);
+    await doc.save();
+    res.status(200).json({
+      message: i18n.__("ktpCreateSuccess"),
+    });
   } catch (err) {
     res.status(500).json({
-      message: "Не удалось создать план",
+      message: i18n.__("ktpCreateError"),
     });
   }
 };
@@ -67,15 +70,14 @@ export const getOne = async (req, res) => {
       },
       (err, doc) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
-            message: "Не удалось вернуть план",
+            message: i18n.__("ktpReturnPlanFailed"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: "Планы не найдены",
+            message: i18n.__("ktpPlansNotFound"),
           });
         }
 
@@ -83,9 +85,8 @@ export const getOne = async (req, res) => {
       }
     );
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список планов",
+      message: i18n.__("ktpGetPlanListFailed"),
     });
   }
 };
@@ -98,9 +99,8 @@ export const getByClassByPredmet = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список планов",
+      message: i18n.__("ktpGetPlanListFailed"),
     });
   }
 };
@@ -113,9 +113,8 @@ export const getByMyClassByPredmet = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список планов",
+      message: i18n.__("ktpGetPlanListFailed"),
     });
   }
 };
@@ -125,9 +124,8 @@ export const getAllKtp = async (req, res) => {
     const ktp = await Ktp.find().exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список планов",
+      message: i18n.__("ktpGetPlanListFailed"),
     });
   }
 };
@@ -141,9 +139,8 @@ export const getPeriod = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список планов",
+      message: i18n.__("ktpGetPlanListFailed"),
     });
   }
 };
@@ -155,16 +152,16 @@ export const deleteKtpMark = async (req, res) => {
     const ktp = await Ktp.findById(ktpId);
 
     if (!ktp) {
-      return res.status(404).json({ message: "КТП не найден" });
+      return res.status(404).json({ message: i18n.__("ktpFindError") });
     }
 
     await Mark.deleteMany({ markDate: ktpId });
     await Ktp.deleteOne({ _id: ktpId });
 
-    res.status(200).json({ message: "КТП и все оценки за этот урок удалены" });
+    res.status(200).json({ message: i18n.__("ktpDeleteWithMarks") });
   } catch (err) {
     res.status(500).json({
-      message: "Ошибка сервера",
+      message: i18n.__("serverError"),
     });
   }
 };

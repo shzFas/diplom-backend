@@ -1,4 +1,5 @@
 import Mark from "../models/Mark.js";
+import i18n from "i18n";
 
 export const createMark = async (req, res) => {
   try {
@@ -14,12 +15,13 @@ export const createMark = async (req, res) => {
       markSochSor: req.body.markSochSor,
       markPeriod: req.body.markPeriod,
     });
-    const ktp = await doc.save();
-    res.json(ktp);
+    await doc.save();
+    res.status(200).json({
+      message: i18n.__("markCreateSuccess"),
+    });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось поставить оценку",
+      message: i18n.__("markCreateSuccess"),
     });
   }
 };
@@ -40,15 +42,14 @@ export const getOne = async (req, res) => {
       },
       (err, doc) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
-            message: "Не удалось вернуть оценку",
+            message: i18n.__("markNotFound"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: "Оценка не найдена",
+            message: i18n.__("markNotFound"),
           });
         }
 
@@ -56,9 +57,8 @@ export const getOne = async (req, res) => {
       }
     );
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить оценку",
+      message: i18n.__("markNotFound"),
     });
   }
 };
@@ -71,9 +71,8 @@ export const getByStudentByKtp = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить Оценку",
+      message: i18n.__("markNotFound"),
     });
   }
 };
@@ -88,9 +87,8 @@ export const getByStudentByPredmet = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить Оценки",
+      message: i18n.__("markGetMarksFailed"),
     });
   }
 };
@@ -100,9 +98,8 @@ export const getAllMarks = async (req, res) => {
     const mark = await Mark.find().exec();
     res.json(mark);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить список оценок",
+      message: i18n.__("markGetMarksFailed"),
     });
   }
 };
@@ -119,27 +116,25 @@ export const deleteOne = async (req, res) => {
       },
       (err, doc) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
-            message: "Не удалось удалить оценку",
+            message: i18n.__("markDeleteMarkFailed"),
           });
         }
 
         if (!doc) {
           return res.status(404).json({
-            message: "Оценка не найдена",
+            message: i18n.__("markNotFound"),
           });
         }
 
         res.json({
-          success: true,
+          message: i18n.__("deleteMark"),
         });
       }
     );
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить оценку",
+      message: i18n.__("markReturnMarkFailed"),
     });
   }
 };
@@ -153,9 +148,8 @@ export const getAllMarkStudent = async (req, res) => {
     }).exec();
     res.json(ktp);
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Не удалось получить Оценки",
+      message: i18n.__("markGetMarksFailed"),
     });
   }
 };
