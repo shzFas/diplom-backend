@@ -51,5 +51,6 @@
   "teacherError": "Мұғалім табылмады",
   "teacherDelete": "Мұғалім құралдан алынды",
   "studentError": "Студент табылмады",
-  "studentDelete": "Студент шығарылды"
+  "studentDelete": "Студент шығарылды",
+  "studentClassChange": "Сынып өзгертілді"
 }

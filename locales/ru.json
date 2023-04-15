@@ -51,5 +51,6 @@
   "teacherError": "Учитель не найден",
   "teacherDelete": "Учитель уволен",
   "studentError": "Студент не найден",
-  "studentDelete": "Студент отчислен"
+  "studentDelete": "Студент отчислен",
+  "studentClassChange": "Класс изменен"
 }

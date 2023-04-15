@@ -214,7 +214,7 @@ export const changeClassStudent = async (req, res) => {
       { classId },
       { new: true }
     );
-    res.status(200).json(updatedStudent);
+    res.status(200).json({ message: i18n.__("studentClassChange") });
   } catch (error) {
     res.status(500).json({ message: i18n.__("serverError") });
   }
