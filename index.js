@@ -25,6 +25,7 @@ import { handleValidationErrors, checkAuth } from "./utils/index.js";
 import dotenv from "dotenv";
 import i18n from "i18n";
 import path from "path";
+import { swaggerDocs } from "./swagger/swagger.js";
 dotenv.config();
 
 mongoose
@@ -52,7 +53,7 @@ app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
 app.use(function(req, res, next){
-  i18n.setLocale(req.query.lang);
+  i18n.setLocale(req.query.lang || "ru");
   next();
 })
 
@@ -187,4 +188,5 @@ app.listen(process.env.PORT || 4444, (err) => {
     return console.log(err);
   }
   console.log("Server OK");
+  swaggerDocs(app, 4444);
 });
