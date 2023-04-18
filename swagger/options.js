@@ -4,7 +4,7 @@ export const options = {
     info: {
       title: "Diplom Server",
       contact: {
-        url: "github.com/shzfas",
+        url: "https://github.com/shzfas",
       },
       version: "1.0",
     },
@@ -25,11 +25,19 @@ export const options = {
       },
       {
         name: "Teachers",
-        description: "CRUD teachers"
+        description: "CRUD teachers",
       },
       {
         name: "Students",
-        description: "CRUD students"
+        description: "CRUD students",
+      },
+      {
+        name: "Classes",
+        description: "CRUD classes",
+      },
+      {
+        name: "Subjects",
+        description: "CRUD subjects"
       }
     ],
     paths: {
@@ -223,16 +231,18 @@ export const options = {
           summary: "Change password Admin/Teacher",
           description: "Need paste JWT Token in Authorize",
           security: [{ bearerAuth: [] }],
-          parameters: [{
-            name: "_id",
-            in: "path",
-            description: "ID user",
-            required: true,
-            schema: {
-              type: "string",
-              example: "63fdbb3c01e0f48bbccb770a",
-            }
-          }],
+          parameters: [
+            {
+              name: "_id",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
           requestBody: {
             description: "Change password",
             content: {
@@ -265,7 +275,7 @@ export const options = {
               description: "Not access",
             },
           },
-        }
+        },
       },
       "/auth/change-password/student/{_id}": {
         post: {
@@ -273,16 +283,18 @@ export const options = {
           summary: "Change password Student",
           description: "Need paste JWT Token in Authorize",
           security: [{ bearerAuth: [] }],
-          parameters: [{
-            name: "_id",
-            in: "path",
-            description: "ID user",
-            required: true,
-            schema: {
-              type: "string",
-              example: "63fdbb3c01e0f48bbccb770a",
-            }
-          }],
+          parameters: [
+            {
+              name: "_id",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
           requestBody: {
             description: "Change password",
             content: {
@@ -315,7 +327,7 @@ export const options = {
               description: "Not access",
             },
           },
-        }
+        },
       },
       "/teacher": {
         get: {
@@ -326,29 +338,473 @@ export const options = {
               description: "Return Teachers",
             },
           },
-        }
+        },
       },
       "/teacher/{id}": {
         get: {
           tags: ["Teachers"],
           summary: "getOne",
-          parameters: [{
-            name: "id",
-            in: "path",
-            description: "ID user",
-            required: true,
-            schema: {
-              type: "string",
-              example: "63fdbb3c01e0f48bbccb770a",
-            }
-          }],
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
           responses: {
             200: {
-              description: "Return Teachers",
+              description: "Return Teacher",
             },
             404: {
-              description: "Not found"
-            }
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/teacher/{userId}": {
+        put: {
+          tags: ["Teachers"],
+          summary: "addPermission",
+          parameters: [
+            {
+              name: "userId",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          requestBody: {
+            description: "Add subjects",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/UserPermission",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/UserPermission",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/UserPermission",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Success",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/teacher/{userId}/{permissionId}": {
+        delete: {
+          tags: ["Teachers"],
+          summary: "deletePermission",
+          parameters: [
+            {
+              name: "userId",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "permissionId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/delete/teacher/{userId}": {
+        delete: {
+          tags: ["Teachers"],
+          summary: "kickTeacher",
+          parameters: [
+            {
+              name: "userId",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/students": {
+        get: {
+          tags: ["Students"],
+          summary: "getAllStudents",
+          responses: {
+            200: {
+              description: "Return Students",
+            },
+          },
+        },
+      },
+      "/student/{id}": {
+        get: {
+          tags: ["Students"],
+          summary: "getOne",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return Student",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/students/{classId}": {
+        get: {
+          tags: ["Students"],
+          summary: "getByClass",
+          parameters: [
+            {
+              name: "classId",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return Students by Class ID",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/student/changeClass/{id}": {
+        put: {
+          tags: ["Students"],
+          summary: "changeClassStudent",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          requestBody: {
+            description: "Add subjects",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/StudentClass",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/StudentClass",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/StudentClass",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Success",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/student/{studentId}": {
+        delete: {
+          tags: ["Students"],
+          summary: "kickStudent",
+          parameters: [
+            {
+              name: "studentId",
+              in: "path",
+              description: "ID user",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/class": {
+        post: {
+          tags: ["Classes"],
+          summary: "createClass",
+          requestBody: {
+            description: "Add subjects",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/ClassesCreate",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/ClassesCreate",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/ClassesCreate",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Create class succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/classList": {
+        get: {
+          tags: ["Classes"],
+          summary: "getAllClasses",
+          responses: {
+            200: {
+              description: "Response all classes",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/classList/{id}": {
+        get: {
+          tags: ["Classes"],
+          summary: "getOneClass",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return Class",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/subject": {
+        post: {
+          tags: ["Subjects"],
+          summary: "createSubject",
+          requestBody: {
+            description: "Add subjects",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetCreate",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetCreate",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetCreate",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Create predmet succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        }
+      },
+      "/predmet": {
+        get: {
+          tags: ["Subjects"],
+          summary: "getAllSubjects",
+          responses: {
+            200: {
+              description: "Create predmet succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        }
+      },
+      "/predmet/{predmetId}": {
+        get: {
+          tags: ["Subjects"],
+          summary: "getOneSubject",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return Subject",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/predmet/{id}": {
+        put: {
+          tags: ["Subjects"],
+          summary: "addClasses",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          requestBody: {
+            description: "Add classes",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetUpdateClasses",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetUpdateClasses",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/PredmetUpdateClasses",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Add classes succesufully",
+            },
+            404: {
+              description: "Not found",
+            },
           },
         }
       }
@@ -378,6 +834,19 @@ export const options = {
           },
           xml: {
             name: "classes",
+          },
+        },
+        ClassesCreate: {
+          type: "object",
+          properties: {
+            className: {
+              type: "string",
+              example: "Class name",
+              required: true,
+            },
+          },
+          xml: {
+            name: "classescreate",
           },
         },
         Ktp: {
@@ -509,7 +978,6 @@ export const options = {
               type: "string",
               example: "Math",
               required: true,
-              unique: true,
             },
             classes: {
               type: "array",
@@ -522,6 +990,35 @@ export const options = {
           xml: {
             name: "predmet",
           },
+        },
+        PredmetCreate: {
+          type: "object",
+          properties: {
+            predmetName: {
+              type: "string",
+              example: "Math",
+              required: true,
+            },
+            classes: {
+              type: "array",
+              items: {
+                $ref: "#/components/schemas/Classes",
+              },
+              required: true,
+            },
+          }
+        },
+        PredmetUpdateClasses: {
+          type: "object",
+          properties: {
+            classes: {
+              type: "array",
+              items: {
+                $ref: "#/components/schemas/Classes",
+              },
+              required: true,
+            },
+          }
         },
         User: {
           type: "object",
@@ -755,6 +1252,43 @@ export const options = {
           },
           xml: {
             name: "studentchangepassword",
+          },
+        },
+        UserPermission: {
+          type: "object",
+          properties: {
+            permission: {
+              type: "array",
+              items: {
+                type: "object",
+                required: ["_id", "predmetName"],
+                properties: {
+                  _id: {
+                    type: "string",
+                  },
+                  predmetName: {
+                    type: "string",
+                  },
+                },
+              },
+              required: true,
+            },
+          },
+          xml: {
+            name: "userpermission",
+          },
+        },
+        StudentClass: {
+          type: "object",
+          properties: {
+            classId: {
+              type: "string",
+              example: "63fdbb3c01e0f48bbccb770a",
+              required: true,
+            },
+          },
+          xml: {
+            name: "studentclass",
           },
         },
       },

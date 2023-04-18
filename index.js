@@ -117,7 +117,7 @@ app.put("/student/changeClass/:id", StudentController.changeClassStudent);
 
 /* Создание класса */
 app.post(
-  "/classList",
+  "/class",
   classCreateValidation,
   handleValidationErrors,
   ClassesController.createClasslist
@@ -127,7 +127,7 @@ app.get("/classList/:id", ClassesController.getOne);
 
 /* Создание предмета */
 app.post(
-  "/predmet",
+  "/subject",
   predmetValidation,
   handleValidationErrors,
   PredmetController.createPredmet
