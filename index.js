@@ -149,7 +149,7 @@ app.post(
   handleValidationErrors,
   KtpController.createKtp
 );
-app.get("/ktp", KtpController.getAllKtp);
+app.get("/ktps", KtpController.getAllKtp);
 app.get("/ktp/period/:classId/:period/:predmetId", KtpController.getPeriod);
 app.get("/ktps/:id", KtpController.getOne);
 app.get("/ktp/:predmetId/:classId", KtpController.getByClassByPredmet);
@@ -163,7 +163,7 @@ app.post(
   handleValidationErrors,
   MarkController.createMark
 );
-app.get("/marks", MarkController.getAllMarks);
+app.get("/marksall", MarkController.getAllMarks);
 app.get("/marks/:id", MarkController.getOne);
 app.delete("/marks/:studentId/:ktpId", MarkController.deleteOne);
 app.get("/mark/:studentId/:ktpId", MarkController.getByStudentByKtp);

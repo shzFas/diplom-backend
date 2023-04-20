@@ -37,8 +37,16 @@ export const options = {
       },
       {
         name: "Subjects",
-        description: "CRUD subjects"
-      }
+        description: "CRUD subjects",
+      },
+      {
+        name: "KTP",
+        description: "CRUD KTP",
+      },
+      {
+        name: "Marks",
+        description: "CRUD marks",
+      },
     ],
     paths: {
       "/auth/login": {
@@ -713,13 +721,13 @@ export const options = {
           },
           responses: {
             200: {
-              description: "Create predmet succefully",
+              description: "Create subject succefully",
             },
             500: {
               description: "Server error",
             },
           },
-        }
+        },
       },
       "/predmet": {
         get: {
@@ -727,13 +735,13 @@ export const options = {
           summary: "getAllSubjects",
           responses: {
             200: {
-              description: "Create predmet succefully",
+              description: "Return all subjects",
             },
             500: {
               description: "Server error",
             },
           },
-        }
+        },
       },
       "/predmet/{predmetId}": {
         get: {
@@ -744,6 +752,32 @@ export const options = {
               name: "predmetId",
               in: "path",
               description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return Subject",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/predmet/class/{id}": {
+        get: {
+          tags: ["Subjects"],
+          summary: "getPredmetByClass",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID class",
               required: true,
               schema: {
                 type: "string",
@@ -806,8 +840,538 @@ export const options = {
               description: "Not found",
             },
           },
-        }
-      }
+        },
+      },
+      "/predmet/{predmetId}/{classId}": {
+        delete: {
+          tags: ["Subjects"],
+          summary: "deleteClassPredmet",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "classId",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/delete/predmet/{predmetId}": {
+        delete: {
+          tags: ["Subjects"],
+          summary: "deletePredmetById",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            404: {
+              description: "Not found",
+            },
+          },
+        },
+      },
+      "/ktp": {
+        post: {
+          tags: ["KTP"],
+          summary: "createKtp",
+          requestBody: {
+            description: "Add ktp, notice only 1 ktp in period",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/KtpCreate",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/KtpCreate",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/KtpCreate",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Create ktp succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktps": {
+        get: {
+          tags: ["KTP"],
+          summary: "getAllKtp",
+          responses: {
+            200: {
+              description: "Return all ktps",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktp/period/{classId}/{period}/{subjectId}": {
+        get: {
+          tags: ["KTP"],
+          summary: "getByPeriod",
+          parameters: [
+            {
+              name: "classId",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "period",
+              in: "path",
+              description: "Period",
+              required: true,
+              schema: {
+                type: "string",
+                example: "1 || 2 || 3 || 4",
+              },
+            },
+            {
+              name: "subjectId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return all ktps by period, subject, class",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktps/{ktpId}": {
+        get: {
+          tags: ["KTP"],
+          summary: "getOneById",
+          parameters: [
+            {
+              name: "ktpId",
+              in: "path",
+              description: "ID KTP",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return ktp by ID",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktp/{predmetId}/{classId}": {
+        get: {
+          tags: ["KTP"],
+          summary: "getOneById",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "classId",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return all ktps class, subject",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktps/my/{predmetId}/{classId}": {
+        get: {
+          tags: ["KTP"],
+          summary: "getByMyClassByPredmet",
+          parameters: [
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "classId",
+              in: "path",
+              description: "ID class",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return all ktps class, subject",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/ktp/{ktpID}": {
+        delete: {
+          tags: ["KTP"],
+          summary: "deleteKtp with Mark",
+          parameters: [
+            {
+              name: "ktpID",
+              in: "path",
+              description: "ID KTP",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marks": {
+        post: {
+          tags: ["Marks"],
+          summary: "createMark",
+          requestBody: {
+            description: "Add mark",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/MarkCreate",
+                },
+              },
+              "application/xml": {
+                schema: {
+                  $ref: "#/components/schemas/MarkCreate",
+                },
+              },
+              "application/x-www-form-urlencoded": {
+                schema: {
+                  $ref: "#/components/schemas/MarkCreate",
+                },
+              },
+            },
+            required: true,
+          },
+          responses: {
+            200: {
+              description: "Create Mark succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marksall": {
+        get: {
+          tags: ["Marks"],
+          summary: "getAllMarks",
+          responses: {
+            200: {
+              description: "Return all marks",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marks/{markId}": {
+        get: {
+          tags: ["Marks"],
+          summary: "getOneByID",
+          parameters: [
+            {
+              name: "markId",
+              in: "path",
+              description: "ID Mark",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return mark",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/mark/{studentId}/{ktpId}": {
+        get: {
+          tags: ["Marks"],
+          summary: "getByStudentByKtp",
+          parameters: [
+            {
+              name: "studentId",
+              in: "path",
+              description: "ID Student",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "ktpId",
+              in: "path",
+              description: "ID KTP",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return mark",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marks/final/{studentId}/{predmetId}/{type}/{period}": {
+        get: {
+          tags: ["Marks"],
+          summary: "getByStudentByPredmetByPeriod",
+          parameters: [
+            {
+              name: "studentId",
+              in: "path",
+              description: "ID Student",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID Subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "type",
+              in: "path",
+              description: "Type subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "sor || soch || default",
+              },
+            },
+            {
+              name: "period",
+              in: "path",
+              description: "Period",
+              required: true,
+              schema: {
+                type: "string",
+                example: "1 || 2 || 3 || 4",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return mark",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marks/all/{studentId}/{predmetId}/{period}": {
+        get: {
+          tags: ["Marks"],
+          summary: "getAllMarkStudent",
+          parameters: [
+            {
+              name: "studentId",
+              in: "path",
+              description: "ID Student",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "predmetId",
+              in: "path",
+              description: "ID Subject",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "period",
+              in: "path",
+              description: "Period",
+              required: true,
+              schema: {
+                type: "string",
+                example: "1 || 2 || 3 || 4",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Return marks",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
+      "/marks/{studentId}/{ktpId}": {
+        delete: {
+          tags: ["Marks"],
+          summary: "deleteMark",
+          parameters: [
+            {
+              name: "studentId",
+              in: "path",
+              description: "ID Student",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+            {
+              name: "ktpId",
+              in: "path",
+              description: "ID Ktp",
+              required: true,
+              schema: {
+                type: "string",
+                example: "63fdbb3c01e0f48bbccb770a",
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: "Delete succefully",
+            },
+            500: {
+              description: "Server error",
+            },
+          },
+        },
+      },
     },
     components: {
       securitySchemes: {
@@ -902,6 +1466,54 @@ export const options = {
             name: "ktp",
           },
         },
+        KtpCreate: {
+          type: "object",
+          properties: {
+            ktpTitle: {
+              type: "string",
+              example: "Name lesson",
+              required: true,
+            },
+            ktpDate: {
+              type: "string",
+              example: "2023-04-03(yyyy-mm-dd)",
+              required: true,
+            },
+            ktpPredmet: {
+              type: "string",
+              example: "id subject - (643b0a2bb776cf7e838bb565)",
+              required: true,
+            },
+            ktpClass: {
+              type: "string",
+              example: "id class students - (63fdbb3c01e0f48bbccb770a)",
+              required: true,
+            },
+            ktpTeacher: {
+              type: "string",
+              example: "id userTeacher - (643db66a96aa9917ae738b54)",
+              required: true,
+            },
+            ktpSorSoch: {
+              type: "string",
+              example: "sor || soch || default | Only 1 soch in period",
+              required: true,
+            },
+            ktpMaxValue: {
+              type: "int32",
+              example: "(only from 10 to 30)",
+              required: true,
+            },
+            ktpPeriod: {
+              type: "string",
+              example: "1 || 2 || 3 || 4",
+              required: true,
+            },
+          },
+          xml: {
+            name: "ktpcreate",
+          },
+        },
         Mark: {
           type: "object",
           properties: {
@@ -966,6 +1578,65 @@ export const options = {
             name: "mark",
           },
         },
+        MarkCreate: {
+          type: "object",
+          properties: {
+            markTeacher: {
+              type: "string",
+              example: "Is id userTeacher - (643db66a96aa9917ae738b54)",
+              required: true,
+            },
+            markPredmet: {
+              type: "string",
+              example: "Is id subject - (643d5467d0e06b0236d8303e)",
+              required: true,
+            },
+            markStudent: {
+              type: "string",
+              example: "Is id student - (643db6f696aa9917ae738b58)",
+              required: true,
+            },
+            markClassStudent: {
+              type: "string",
+              example: "Is id class - (63fdbb3c01e0f48bbccb770a)",
+              required: true,
+            },
+            markDate: {
+              type: "string",
+              example: "Is id ktp - (643db78e96aa9917ae738b77)",
+              required: true,
+            },
+            markFalse: {
+              type: "boolean",
+              example:
+                "When a student missed a lesson then true, in all other cases false",
+              required: true,
+            },
+            markMaxValue: {
+              type: "int32",
+              example: "(only from 10 to 30) value from ktp",
+              required: true,
+            },
+            markValue: {
+              type: "int32",
+              example: "(only from 10 to 30) teacher set mark",
+              required: true,
+            },
+            markSochSor: {
+              type: "string",
+              example: "sor || soch || default",
+              required: true,
+            },
+            markPeriod: {
+              type: "string",
+              example: "1 || 2 || 3 || 4",
+              required: true,
+            },
+          },
+          xml: {
+            name: "markcreate",
+          },
+        },
         Predmet: {
           type: "object",
           properties: {
@@ -1006,7 +1677,7 @@ export const options = {
               },
               required: true,
             },
-          }
+          },
         },
         PredmetUpdateClasses: {
           type: "object",
@@ -1018,7 +1689,7 @@ export const options = {
               },
               required: true,
             },
-          }
+          },
         },
         User: {
           type: "object",
