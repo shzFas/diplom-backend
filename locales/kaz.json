@@ -52,5 +52,7 @@
   "teacherDelete": "Мұғалім құралдан алынды",
   "studentError": "Студент табылмады",
   "studentDelete": "Студент шығарылды",
-  "studentClassChange": "Сынып өзгертілді"
+  "studentClassChange": "Сынып өзгертілді",
+  "telegramIdSetSuccess": "Телеграмм привязан к аккаунту",
+  "telegramIdSetError": "Проверьте написали ли вы телеграмм боту"
 }

@@ -52,5 +52,7 @@
   "teacherDelete": "Учитель уволен",
   "studentError": "Студент не найден",
   "studentDelete": "Студент отчислен",
-  "studentClassChange": "Класс изменен"
+  "studentClassChange": "Класс изменен",
+  "telegramIdSetSuccess": "Телеграмм привязан к аккаунту",
+  "telegramIdSetError": "Проверьте написали ли вы телеграмм боту"
 }
