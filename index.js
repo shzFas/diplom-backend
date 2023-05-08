@@ -9,6 +9,7 @@ import {
   MarkController,
   PredmetController,
   StudentController,
+  TelegramController,
   UserController,
 } from "./controllers/index.js";
 import {
@@ -52,10 +53,10 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
   i18n.setLocale(req.query.lang || "ru");
   next();
-})
+});
 
 i18n.configure({
   locales: ["ru", "kaz"],
@@ -163,9 +164,16 @@ app.post(
   handleValidationErrors,
   MarkController.createMark
 );
+app.post(
+  "/marks/:chat_id/:message",
+  markValidation,
+  handleValidationErrors,
+  MarkController.createMarkWithTelegram
+);
 app.get("/marksall", MarkController.getAllMarks);
 app.get("/marks/:id", MarkController.getOne);
 app.delete("/marks/:studentId/:ktpId", MarkController.deleteOne);
+app.delete("/marks/:studentId/:ktpId/:chat_id/:message", MarkController.deleteOneTelegram);
 app.get("/mark/:studentId/:ktpId", MarkController.getByStudentByKtp);
 app.get(
   "/marks/final/:studentId/:predmetId/:type/:period",
@@ -174,6 +182,18 @@ app.get(
 app.get(
   "/marks/all/:studentId/:predmetId/:period",
   MarkController.getAllMarkStudent
+);
+
+/* Телеграмм бот */
+app.post(
+  "/telegramStudent/:username/:studentId",
+  checkAuth,
+  TelegramController.chat_idTelegramStudent
+);
+app.post(
+  "/telegramUser/:username/:userId",
+  checkAuth,
+  TelegramController.chat_idTelegramTeacher
 );
 
 /* Загрузка изображений на сервер */

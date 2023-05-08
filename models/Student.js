@@ -19,6 +19,14 @@ const StudentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    telegram_id: {
+      type: String,
+      unique: true,
+    },
+    telegram_username: {
+      type: String,
+      unique: true,
+    },
     avatarUrl: String,
   },
   {
