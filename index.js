@@ -27,7 +27,24 @@ import dotenv from "dotenv";
 import i18n from "i18n";
 import path from "path";
 import { swaggerDocs } from "./swagger/swagger.js";
+import TelegramBot from "node-telegram-bot-api";
 dotenv.config();
+
+/* Telegram бот */
+
+const token = process.env.TELEGRAM_COMMAND_TOKEN;
+
+const bot = new TelegramBot(token, {polling: true});
+
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+
+  bot.sendChatAction(chatId, "typing");
+
+  setTimeout(() => {
+    bot.sendMessage(chatId, `Поздравляю, теперь привяжите *${msg.chat.username}* в своем личном кабинете портала BilimEDU, чтобы получать уведомления об оценках !`,  {parse_mode: "Markdown"});
+  }, 1000);
+});
 
 mongoose
   .connect(process.env.MONGODB_URI) /* поменял пароль */
