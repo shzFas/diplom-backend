@@ -153,8 +153,13 @@ GET    /students/{id}/attendance?termId=
 |---|---|---|
 | 400 | `VALIDATION_FAILED` | Bean Validation на DTO |
 | 401 | `TOKEN_MISSING` · `TOKEN_EXPIRED` | Нет или истёк access-токен |
+| 401 | `TOKEN_INVALID` | Подпись не сходится или токен повреждён |
+| 401 | `INVALID_CREDENTIALS` | Неверная пара email + пароль |
+| 401 | `REFRESH_TOKEN_INVALID` | Refresh-токен неизвестен, отозван или истёк |
 | 403 | `ROLE_FORBIDDEN` · `NOT_OWNER` | Роль не та; ресурс чужой |
+| 403 | `ACCOUNT_DEACTIVATED` | `users.deactivated_at` не NULL |
 | 404 | `NOT_FOUND` | |
+| 500 | `INTERNAL_ERROR` | Непредвиденная ошибка; стектрейс не уходит клиенту |
 | 409 | `SOCH_ALREADY_EXISTS` | Правило D5 |
 | 409 | `GRADE_ALREADY_EXISTS` | Правило D6 |
 | 409 | `ENROLLMENT_OVERLAPS` | Правило временно́й модели |
@@ -166,3 +171,12 @@ GET    /students/{id}/attendance?termId=
 Каждый код 409 и 422 соответствует ограничению из `domain-rules.md`.
 Сервисный слой ловит нарушение ограничения базы и переводит его в код —
 источником истины остаётся база, а не проверка в приложении.
+
+Шесть кодов добавлены в фазе 02: первая редакция контракта не описывала
+случаи аутентификации. `INVALID_CREDENTIALS` намеренно один на «нет такого
+email» и «неверный пароль» — иначе ответ выдаёт, какие адреса заведены
+в системе.
+
+**Смена пароля.** Поле тела `POST /me/password` называется `new`; это
+ключевое слово Java, поэтому в коде компонент записи назван иначе, а имя
+в JSON задано явно. Контракт не меняется.

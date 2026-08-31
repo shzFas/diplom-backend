@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: bilimedu-api
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bilimedu}
+    username: ${DB_USER:bilimedu}
+    password: ${DB_PASSWORD:devonly}
+
+  # Схема принадлежит Flyway. Hibernate её только проверяет и никогда не меняет:
+  # ограничения из миграций (EXCLUDE, частичные индексы, триггеры) он всё равно
+  # не умеет выразить, а ddl-auto=update молча снёс бы их.
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+bilimedu:
+  jwt:
+    # Пустая строка вместо отсутствия переменной — чтобы приложение упало
+    # с внятной ошибкой валидации, а не с NPE резолвера плейсхолдеров.
+    secret: ${JWT_SECRET:}
+    issuer: bilimedu-api
+    access-ttl: 15m
+    refresh-ttl: 30d
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+logging:
+  level:
+    kz.bilimedu.api: INFO

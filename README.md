@@ -9,8 +9,9 @@ PostgreSQL.
 
 ## Статус
 
-**Фаза 01 — контракт и схема.** Кода приложения ещё нет: сначала фиксируются
-модель данных и контракт, потом пишется сервис.
+**Фаза 02 — каркас и аутентификация.** Схема и контракт зафиксированы в фазе 01,
+теперь на них лёг сервис: Spring Boot 4.1 на Java 21, Spring Security, модуль
+`auth`. Предметные модули (классы, предметы, назначения, уроки, оценки) — впереди.
 
 | | Артефакт |
 |---|---|
@@ -19,12 +20,36 @@ PostgreSQL.
 | Правила домена | `docs/domain-rules.md` |
 | Матрица прав | `docs/permissions.md` |
 | Контракт API | `docs/api-v1.md` |
+| Приложение | `src/main/java/kz/bilimedu/api/` |
+| Интеграционные тесты | 20 тестов против PostgreSQL в Testcontainers |
+
+### Что уже работает
+
+```
+POST /api/v1/auth/login      POST /api/v1/auth/refresh    POST /api/v1/auth/logout
+GET  /api/v1/me              POST /api/v1/me/password
+GET  /api/v1/health          GET  /api/v1/docs
+```
+
+Публичны ровно четыре из них — `login`, `refresh`, `health`, `docs`;
+всё остальное требует access-токена.
 
 ## Запуск
 
 ```sh
 cp .env.example .env
+openssl rand -base64 48                              # вписать в JWT_SECRET
 docker compose up flyway --exit-code-from flyway     # поднять БД и накатить схему
+./mvnw spring-boot:run
+```
+
+Без `JWT_SECRET` приложение не стартует — это осознанное поведение, а не
+недосмотр: в версии 2023 года секрет был строкой `secret123` в исходниках.
+
+Тесты поднимают свой PostgreSQL в контейнере, готовить базу для них не нужно:
+
+```sh
+./mvnw test
 ```
 
 Проверить, что доменные правила действительно живут в базе:
@@ -50,8 +75,23 @@ docker compose exec -T db psql -U bilimedu -d bilimedu \
 | Четверти года не пересекаются | `EXCLUDE USING gist` |
 | Ученик не в двух классах одновременно | `EXCLUDE USING gist` |
 
+## Стек
+
+| | |
+|---|---|
+| Java 21, Spring Boot 4.1 | Maven, wrapper в репозитории — ставить Maven отдельно не нужно |
+| PostgreSQL 16 + Flyway | схема принадлежит миграциям, Hibernate её только валидирует |
+| Spring Security 7 | свой JWT-фильтр: контракт требует различать `TOKEN_MISSING` и `TOKEN_EXPIRED` |
+| Argon2id | хеш пароля; в версии 2023 года был bcrypt с секретом в коде |
+| Testcontainers | тесты идут против настоящего PostgreSQL — половина правил живёт в ограничениях базы |
+
 ## Дальше
 
-Фаза 02 — каркас Spring Boot, Spring Security и модули по порядку:
-auth → classes → subjects → assignments → lessons → grades → notifications.
-Приёмочные критерии — список тестов в конце `docs/permissions.md`.
+Модули по порядку: **users (CRUD от ADMIN)** → classes → subjects →
+assignments → lessons → grades → notifications. Приёмочные критерии —
+список тестов в конце `docs/permissions.md`: три из восьми закрыты.
+
+Ближайшее препятствие — завести первого пользователя. Ручки создания
+пользователей принадлежат `ADMIN`, а `ADMIN` пока неоткуда взяться:
+нужен либо сид при старте, либо разовая миграция. Регистрации самозаписью
+не будет — именно она была дырой версии 2023 года.

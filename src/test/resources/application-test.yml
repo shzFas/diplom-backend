@@ -1,0 +1,8 @@
+# Профиль тестов. Datasource приходит от Testcontainers через @ServiceConnection,
+# здесь только то, что иначе пришлось бы держать в переменных окружения.
+bilimedu:
+  jwt:
+    secret: integration-test-secret-key-at-least-32-chars-long
+logging:
+  level:
+    org.hibernate.SQL: WARN
