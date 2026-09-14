@@ -35,6 +35,14 @@ bilimedu:
     access-ttl: 15m
     refresh-ttl: 30d
 
+  # Первый администратор. Задать на первый запуск и убрать: повторный старт
+  # с этими переменными ничего не меняет, если активный ADMIN уже есть.
+  bootstrap:
+    admin:
+      email: ${BOOTSTRAP_ADMIN_EMAIL:}
+      password: ${BOOTSTRAP_ADMIN_PASSWORD:}
+      full-name: ${BOOTSTRAP_ADMIN_NAME:}
+
 server:
   port: ${PORT:8080}
   error:

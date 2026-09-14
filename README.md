@@ -9,9 +9,11 @@ PostgreSQL.
 
 ## Статус
 
-**Фаза 02 — каркас и аутентификация.** Схема и контракт зафиксированы в фазе 01,
-теперь на них лёг сервис: Spring Boot 4.1 на Java 21, Spring Security, модуль
-`auth`. Предметные модули (классы, предметы, назначения, уроки, оценки) — впереди.
+**Фаза 02 — каркас, аутентификация, пользователи.** Схема и контракт
+зафиксированы в фазе 01, теперь на них лёг сервис: Spring Boot 4.1 на Java 21,
+Spring Security, модули `auth` и `users`. Система запускается с нуля: первый
+администратор заводится сидом. Предметные модули (классы, предметы,
+назначения, уроки, оценки) — впереди.
 
 | | Артефакт |
 |---|---|
@@ -21,18 +23,24 @@ PostgreSQL.
 | Матрица прав | `docs/permissions.md` |
 | Контракт API | `docs/api-v1.md` |
 | Приложение | `src/main/java/kz/bilimedu/api/` |
-| Интеграционные тесты | 20 тестов против PostgreSQL в Testcontainers |
+| Интеграционные тесты | 39 тестов против PostgreSQL в Testcontainers |
 
 ### Что уже работает
 
 ```
-POST /api/v1/auth/login      POST /api/v1/auth/refresh    POST /api/v1/auth/logout
-GET  /api/v1/me              POST /api/v1/me/password
-GET  /api/v1/health          GET  /api/v1/docs
+POST   /api/v1/auth/login    POST /api/v1/auth/refresh    POST /api/v1/auth/logout
+GET    /api/v1/me            POST /api/v1/me/password
+GET    /api/v1/health        GET  /api/v1/docs
+
+GET    /api/v1/users?role=&classId=&includeDeactivated=&page=&size=
+POST   /api/v1/users         GET  /api/v1/users/{id}
+PATCH  /api/v1/users/{id}    DELETE /api/v1/users/{id}    → деактивация
 ```
 
-Публичны ровно четыре из них — `login`, `refresh`, `health`, `docs`;
-всё остальное требует access-токена.
+Публичны ровно четыре — `login`, `refresh`, `health`, `docs`; всё остальное
+требует access-токена. Заводить и править пользователей может только `ADMIN`;
+читать список может каждый, но `TEACHER` видит коллег и учеников своих
+классов, а `STUDENT` — только себя.
 
 ## Запуск
 
@@ -42,6 +50,19 @@ openssl rand -base64 48                              # вписать в JWT_SEC
 docker compose up flyway --exit-code-from flyway     # поднять БД и накатить схему
 ./mvnw spring-boot:run
 ```
+
+**Первый запуск.** Ручки создания пользователей принадлежат `ADMIN`,
+а регистрации самозаписью нет — именно она была дырой версии 2023 года.
+Поэтому первый администратор заводится сидом: заполнить в `.env`
+
+```
+BOOTSTRAP_ADMIN_EMAIL=zavuch@school.kz
+BOOTSTRAP_ADMIN_PASSWORD=<длинный пароль>
+```
+
+запустить приложение, затем убрать эти переменные и сменить пароль через
+`POST /api/v1/me/password`. Сид срабатывает, только если активного
+администратора в базе нет: повторный старт ничего не перезаписывает.
 
 Без `JWT_SECRET` приложение не стартует — это осознанное поведение, а не
 недосмотр: в версии 2023 года секрет был строкой `secret123` в исходниках.
@@ -87,11 +108,11 @@ docker compose exec -T db psql -U bilimedu -d bilimedu \
 
 ## Дальше
 
-Модули по порядку: **users (CRUD от ADMIN)** → classes → subjects →
-assignments → lessons → grades → notifications. Приёмочные критерии —
-список тестов в конце `docs/permissions.md`: три из восьми закрыты.
+Модули по порядку: ~~users~~ → **academic-years и terms** → classes →
+subjects → teaching-assignments → enrollments → lessons → grades →
+notifications. Приёмочные критерии — список тестов в конце
+`docs/permissions.md`: три из восьми закрыты, остальные пять требуют
+журнала и оценок.
 
-Ближайшее препятствие — завести первого пользователя. Ручки создания
-пользователей принадлежат `ADMIN`, а `ADMIN` пока неоткуда взяться:
-нужен либо сид при старте, либо разовая миграция. Регистрации самозаписью
-не будет — именно она была дырой версии 2023 года.
+Следующий шаг — учебный календарь: без четвертей нельзя завести ни класс
+(`classes.academic_year_id`), ни урок (`lessons.term_id`).

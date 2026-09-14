@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -50,7 +51,9 @@ public class User {
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    // Значение при вставке ставит DEFAULT now() в базе, при изменении — @PreUpdate:
+    // триггера на updated_at в схеме нет, а без этого поле было бы декоративным.
+    @Column(nullable = false, insertable = false)
     private Instant updatedAt;
 
     /** Мягкое удаление: уволенный учитель остаётся автором выставленных оценок. */
@@ -66,8 +69,25 @@ public class User {
         this.role = role;
     }
 
+    @PreUpdate
+    void touchUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
+
     public boolean isActive() {
         return deactivatedAt == null;
+    }
+
+    public void rename(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Long getId() {

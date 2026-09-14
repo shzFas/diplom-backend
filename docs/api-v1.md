@@ -83,10 +83,10 @@ POST   /me/telegram/link    { code }            → 204
 ### Справочники · ADMIN
 
 ```
-GET    /users?role=&classId=&page=&size=
-POST   /users               { fullName, email, role, password }
+GET    /users?role=&classId=&includeDeactivated=&page=&size=
+POST   /users               { fullName, email, role, password }     → 201
 GET    /users/{id}
-PATCH  /users/{id}
+PATCH  /users/{id}          { fullName, email, avatarUrl }
 DELETE /users/{id}                              → деактивация, не удаление
 
 GET    /academic-years          POST /academic-years
@@ -99,6 +99,21 @@ GET    /subjects                POST /subjects
 GET    /teaching-assignments?teacherId=&classId=
 POST   /teaching-assignments    DELETE /teaching-assignments/{id}
 ```
+
+Чтение `users` доступно всем ролям, но показывает разное (`permissions.md`):
+`ADMIN` — всех, `TEACHER` — коллег-учителей и учеников своих классов,
+`STUDENT` — только себя. Видимость встроена в запрос, а не отфильтрована
+поверх результата: иначе `total` выдавал бы существование скрытых записей.
+Чужая запись отвечает `403 NOT_OWNER`.
+
+`PATCH /users/{id}` не меняет роль. Учитель связан с `teaching_assignments`
+и остаётся автором оценок (`grades.graded_by` с `ON DELETE RESTRICT`), поэтому
+превращение его в ученика оставило бы назначения без учителя. Смена роли —
+это деактивация одной записи и заведение другой.
+
+`DELETE /users/{id}` немедленно отзывает все refresh-токены пользователя:
+иначе уволенный работал бы по живому токену ещё тридцать дней.
+Деактивированные не попадают в списки без `?includeDeactivated=true`.
 
 ### Зачисления
 
@@ -159,6 +174,8 @@ GET    /students/{id}/attendance?termId=
 | 403 | `ROLE_FORBIDDEN` · `NOT_OWNER` | Роль не та; ресурс чужой |
 | 403 | `ACCOUNT_DEACTIVATED` | `users.deactivated_at` не NULL |
 | 404 | `NOT_FOUND` | |
+| 409 | `EMAIL_ALREADY_EXISTS` | Email занят другим пользователем |
+| 409 | `CANNOT_DEACTIVATE_SELF` | Администратор деактивирует сам себя |
 | 500 | `INTERNAL_ERROR` | Непредвиденная ошибка; стектрейс не уходит клиенту |
 | 409 | `SOCH_ALREADY_EXISTS` | Правило D5 |
 | 409 | `GRADE_ALREADY_EXISTS` | Правило D6 |

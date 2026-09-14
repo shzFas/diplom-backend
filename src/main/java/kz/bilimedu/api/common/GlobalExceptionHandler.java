@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,6 +50,16 @@ public class GlobalExceptionHandler {
             details.add(item);
         }
         return build(ErrorCode.VALIDATION_FAILED, details);
+    }
+
+    /**
+     * Отказ от @PreAuthorize приходит сюда раньше, чем до AccessDeniedHandler
+     * Spring Security: исключение бросается внутри вызова контроллера.
+     * Без этого обработчика 403 превратился бы в 500.
+     */
+    @ExceptionHandler({AuthorizationDeniedException.class, AccessDeniedException.class})
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(RuntimeException ex) {
+        return build(ErrorCode.ROLE_FORBIDDEN, List.of());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

@@ -29,6 +29,11 @@ public enum ErrorCode {
 
     NOT_FOUND(HttpStatus.NOT_FOUND),
 
+    /** Дополнение к контракту: email занят другим пользователем. */
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: администратор пытается деактивировать сам себя. */
+    CANNOT_DEACTIVATE_SELF(HttpStatus.CONFLICT),
+
     SOCH_ALREADY_EXISTS(HttpStatus.CONFLICT),
     GRADE_ALREADY_EXISTS(HttpStatus.CONFLICT),
     ENROLLMENT_OVERLAPS(HttpStatus.CONFLICT),
