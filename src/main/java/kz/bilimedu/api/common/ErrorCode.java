@@ -65,6 +65,12 @@ public enum ErrorCode {
     NOT_A_TEACHER(HttpStatus.UNPROCESSABLE_CONTENT),
     /** Дополнение к контракту: зачислить можно только пользователя с ролью STUDENT. */
     NOT_A_STUDENT(HttpStatus.UNPROCESSABLE_CONTENT),
+    /**
+     * Дополнение к контракту: четверть принадлежит другому учебному году,
+     * чем класс урока. Схемой это не ловится — lessons ссылается на term
+     * и на assignment независимо, а триггер проверяет только даты.
+     */
+    TERM_YEAR_MISMATCH(HttpStatus.UNPROCESSABLE_CONTENT),
 
     GRADE_EXCEEDS_MAX(HttpStatus.UNPROCESSABLE_CONTENT),
     STUDENT_NOT_ENROLLED(HttpStatus.UNPROCESSABLE_CONTENT),
