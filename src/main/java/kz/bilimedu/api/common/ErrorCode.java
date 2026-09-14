@@ -51,6 +51,11 @@ public enum ErrorCode {
     /** Дополнение к контракту: дубль урока в назначении на ту же дату. */
     LESSON_ALREADY_EXISTS(HttpStatus.CONFLICT),
 
+    /** Дополнение к контракту: перевод оформляют только по активному зачислению. */
+    ENROLLMENT_NOT_ACTIVE(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: перевод в тот же класс, где ученик и так числится. */
+    ALREADY_IN_CLASS(HttpStatus.CONFLICT),
+
     SOCH_ALREADY_EXISTS(HttpStatus.CONFLICT),
     GRADE_ALREADY_EXISTS(HttpStatus.CONFLICT),
     ENROLLMENT_OVERLAPS(HttpStatus.CONFLICT),
@@ -58,6 +63,8 @@ public enum ErrorCode {
 
     /** Дополнение к контракту: на предмет назначают только пользователя с ролью TEACHER. */
     NOT_A_TEACHER(HttpStatus.UNPROCESSABLE_CONTENT),
+    /** Дополнение к контракту: зачислить можно только пользователя с ролью STUDENT. */
+    NOT_A_STUDENT(HttpStatus.UNPROCESSABLE_CONTENT),
 
     GRADE_EXCEEDS_MAX(HttpStatus.UNPROCESSABLE_CONTENT),
     STUDENT_NOT_ENROLLED(HttpStatus.UNPROCESSABLE_CONTENT),
