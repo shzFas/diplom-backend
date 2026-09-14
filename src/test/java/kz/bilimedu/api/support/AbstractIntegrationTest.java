@@ -91,30 +91,52 @@ public abstract class AbstractIntegrationTest {
         return authorized(login(email).accessToken());
     }
 
-    // --- школьная структура: сущностей JPA для этих таблиц ещё нет ---
+    // --- школьная структура: ставится напрямую в базу, чтобы тесты модуля
+    //     не зависели от корректности других его же ручек ---
+
+    protected short createAcademicYear() {
+        return createAcademicYear("2025\u20132026", "2025-09-01", "2026-05-25");
+    }
+
+    protected short createAcademicYear(String name, String startsOn, String endsOn) {
+        return jdbc.sql("INSERT INTO academic_years (name, starts_on, ends_on) "
+                        + "VALUES (:name, CAST(:from AS date), CAST(:to AS date)) "
+                        + "ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id")
+                .param("name", name).param("from", startsOn).param("to", endsOn)
+                .query(Short.class).single();
+    }
+
+    protected short createTerm(short academicYearId, int ordinal, String startsOn, String endsOn) {
+        return jdbc.sql("INSERT INTO terms (academic_year_id, ordinal, starts_on, ends_on) "
+                        + "VALUES (:year, :ordinal, CAST(:from AS date), CAST(:to AS date)) RETURNING id")
+                .param("year", academicYearId).param("ordinal", ordinal)
+                .param("from", startsOn).param("to", endsOn)
+                .query(Short.class).single();
+    }
 
     protected long createClass(String name) {
-        Long yearId = jdbc.sql("INSERT INTO academic_years (name, starts_on, ends_on) "
-                        + "VALUES (:name, DATE '2025-09-01', DATE '2026-05-25') "
-                        + "ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id")
-                .param("name", "2025–2026")
-                .query(Long.class).single();
+        return createClassIn(createAcademicYear(), name);
+    }
 
+    protected long createClassIn(short academicYearId, String name) {
         return jdbc.sql("INSERT INTO classes (academic_year_id, name) VALUES (:year, :name) RETURNING id")
-                .param("year", yearId).param("name", name)
+                .param("year", academicYearId).param("name", name)
                 .query(Long.class).single();
     }
 
-    protected void assignTeacher(long teacherId, long classId, String subject) {
-        Long subjectId = jdbc.sql("INSERT INTO subjects (name) VALUES (:name) "
+    protected long createSubject(String name) {
+        return jdbc.sql("INSERT INTO subjects (name) VALUES (:name) "
                         + "ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id")
-                .param("name", subject)
+                .param("name", name)
                 .query(Long.class).single();
+    }
 
-        jdbc.sql("INSERT INTO teaching_assignments (class_id, subject_id, teacher_id) "
-                        + "VALUES (:class, :subject, :teacher)")
-                .param("class", classId).param("subject", subjectId).param("teacher", teacherId)
-                .update();
+    protected long assignTeacher(long teacherId, long classId, String subject) {
+        return jdbc.sql("INSERT INTO teaching_assignments (class_id, subject_id, teacher_id) "
+                        + "VALUES (:class, :subject, :teacher) RETURNING id")
+                .param("class", classId).param("subject", createSubject(subject))
+                .param("teacher", teacherId)
+                .query(Long.class).single();
     }
 
     protected void enroll(long studentId, long classId) {
@@ -122,6 +144,15 @@ public abstract class AbstractIntegrationTest {
                         + "VALUES (:student, :class, DATE '2025-09-01')")
                 .param("student", studentId).param("class", classId)
                 .update();
+    }
+
+    protected long createLesson(long assignmentId, short termId, String title, String lessonDate) {
+        return jdbc.sql("INSERT INTO lessons (assignment_id, term_id, title, lesson_date, kind, max_score) "
+                        + "VALUES (:assignment, :term, :title, CAST(:date AS date), "
+                        + "CAST('LESSON' AS assessment_kind), 10) RETURNING id")
+                .param("assignment", assignmentId).param("term", termId)
+                .param("title", title).param("date", lessonDate)
+                .query(Long.class).single();
     }
 
     /** Тело ошибки из docs/api-v1.md. */
@@ -132,5 +163,13 @@ public abstract class AbstractIntegrationTest {
 
     /** Страница из контракта: {items, page, size, total}. */
     public record UserPage(List<Map<String, Object>> items, int page, int size, long total) {
+    }
+
+    /** Та же страница для любых других коллекций — поля контракта одинаковы. */
+    public record ItemsPage(List<Map<String, Object>> items, int page, int size, long total) {
+
+        public List<Object> field(String name) {
+            return items.stream().map(item -> item.get(name)).toList();
+        }
     }
 }

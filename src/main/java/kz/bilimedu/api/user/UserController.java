@@ -2,10 +2,10 @@ package kz.bilimedu.api.user;
 
 import jakarta.validation.Valid;
 import kz.bilimedu.api.common.PageResponse;
+import kz.bilimedu.api.common.Paging;
 import kz.bilimedu.api.security.AuthenticatedUser;
 import kz.bilimedu.api.user.dto.CreateUserRequest;
 import kz.bilimedu.api.user.dto.UpdateUserRequest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    /** Верхняя граница страницы: в версии 2023 года коллекции отдавались целиком. */
-    private static final int MAX_PAGE_SIZE = 200;
-
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -45,9 +42,7 @@ public class UserController {
                                            @RequestParam(defaultValue = "false") boolean includeDeactivated,
                                            @RequestParam(defaultValue = "0") int page,
                                            @RequestParam(defaultValue = "50") int size) {
-        int safeSize = Math.clamp(size, 1, MAX_PAGE_SIZE);
-        return userService.list(viewer, role, classId, includeDeactivated,
-                PageRequest.of(Math.max(page, 0), safeSize));
+        return userService.list(viewer, role, classId, includeDeactivated, Paging.of(page, size));
     }
 
     @GetMapping("/{id}")

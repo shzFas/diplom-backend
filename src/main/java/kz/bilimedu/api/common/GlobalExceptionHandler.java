@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -29,9 +30,12 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final MessageSource messages;
+    private final ConstraintViolationTranslator constraintTranslator;
 
-    public GlobalExceptionHandler(MessageSource messages) {
+    public GlobalExceptionHandler(MessageSource messages,
+                                  ConstraintViolationTranslator constraintTranslator) {
         this.messages = messages;
+        this.constraintTranslator = constraintTranslator;
     }
 
     @ExceptionHandler(ApiException.class)
@@ -60,6 +64,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AuthorizationDeniedException.class, AccessDeniedException.class})
     public ResponseEntity<ApiErrorResponse> handleAccessDenied(RuntimeException ex) {
         return build(ErrorCode.ROLE_FORBIDDEN, List.of());
+    }
+
+    /**
+     * Нарушение ограничения базы — не ошибка сервера, а осмысленный ответ:
+     * база и есть источник истины по доменным правилам.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleConstraint(DataIntegrityViolationException ex,
+                                                             HttpServletRequest request) {
+        ErrorCode code = constraintTranslator.translate(ex).orElse(null);
+        if (code == null) {
+            log.error("Неопознанное нарушение ограничения на {} {}",
+                    request.getMethod(), request.getRequestURI(), ex);
+            return build(ErrorCode.INTERNAL_ERROR, List.of());
+        }
+        return build(code, List.of());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

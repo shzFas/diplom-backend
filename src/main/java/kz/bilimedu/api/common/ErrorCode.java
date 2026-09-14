@@ -34,14 +34,34 @@ public enum ErrorCode {
     /** Дополнение к контракту: администратор пытается деактивировать сам себя. */
     CANNOT_DEACTIVATE_SELF(HttpStatus.CONFLICT),
 
+    /** Дополнение к контракту: учебный год с таким названием уже есть. */
+    ACADEMIC_YEAR_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    /** Правило D2: четверти внутри года не пересекаются. */
+    TERM_OVERLAPS(HttpStatus.CONFLICT),
+    /** Правило D1: номер четверти в году уникален и лежит в 1..4. */
+    TERM_ORDINAL_TAKEN(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: класс с таким именем в этом году уже есть. */
+    CLASS_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: предмет с таким названием уже есть. */
+    SUBJECT_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: у пары «класс + предмет» уже есть учитель. */
+    ASSIGNMENT_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: у назначения есть уроки, удаление унесло бы журнал. */
+    ASSIGNMENT_HAS_LESSONS(HttpStatus.CONFLICT),
+    /** Дополнение к контракту: дубль урока в назначении на ту же дату. */
+    LESSON_ALREADY_EXISTS(HttpStatus.CONFLICT),
+
     SOCH_ALREADY_EXISTS(HttpStatus.CONFLICT),
     GRADE_ALREADY_EXISTS(HttpStatus.CONFLICT),
     ENROLLMENT_OVERLAPS(HttpStatus.CONFLICT),
     TERM_CLOSED(HttpStatus.CONFLICT),
 
-    GRADE_EXCEEDS_MAX(HttpStatus.UNPROCESSABLE_ENTITY),
-    STUDENT_NOT_ENROLLED(HttpStatus.UNPROCESSABLE_ENTITY),
-    LESSON_OUTSIDE_TERM(HttpStatus.UNPROCESSABLE_ENTITY),
+    /** Дополнение к контракту: на предмет назначают только пользователя с ролью TEACHER. */
+    NOT_A_TEACHER(HttpStatus.UNPROCESSABLE_CONTENT),
+
+    GRADE_EXCEEDS_MAX(HttpStatus.UNPROCESSABLE_CONTENT),
+    STUDENT_NOT_ENROLLED(HttpStatus.UNPROCESSABLE_CONTENT),
+    LESSON_OUTSIDE_TERM(HttpStatus.UNPROCESSABLE_CONTENT),
 
     /** Дополнение к контракту: непредвиденная ошибка сервера. */
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);

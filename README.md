@@ -9,11 +9,12 @@ PostgreSQL.
 
 ## Статус
 
-**Фаза 02 — каркас, аутентификация, пользователи.** Схема и контракт
+**Фаза 02 — каркас, аутентификация, справочники.** Схема и контракт
 зафиксированы в фазе 01, теперь на них лёг сервис: Spring Boot 4.1 на Java 21,
-Spring Security, модули `auth` и `users`. Система запускается с нуля: первый
-администратор заводится сидом. Предметные модули (классы, предметы,
-назначения, уроки, оценки) — впереди.
+Spring Security, модули `auth`, `users`, учебный календарь и школьная
+структура. Систему можно наполнить с нуля: администратор заводится сидом,
+дальше — год, четверти, классы, предметы, назначения учителей.
+Впереди зачисления, журнал и оценки.
 
 | | Артефакт |
 |---|---|
@@ -23,7 +24,7 @@ Spring Security, модули `auth` и `users`. Система запускае
 | Матрица прав | `docs/permissions.md` |
 | Контракт API | `docs/api-v1.md` |
 | Приложение | `src/main/java/kz/bilimedu/api/` |
-| Интеграционные тесты | 39 тестов против PostgreSQL в Testcontainers |
+| Интеграционные тесты | 62 теста против PostgreSQL в Testcontainers |
 
 ### Что уже работает
 
@@ -35,12 +36,21 @@ GET    /api/v1/health        GET  /api/v1/docs
 GET    /api/v1/users?role=&classId=&includeDeactivated=&page=&size=
 POST   /api/v1/users         GET  /api/v1/users/{id}
 PATCH  /api/v1/users/{id}    DELETE /api/v1/users/{id}    → деактивация
+
+GET    /api/v1/academic-years            POST /api/v1/academic-years
+GET    /api/v1/terms?academicYearId=     POST /api/v1/terms
+POST   /api/v1/terms/{id}/close          POST /api/v1/terms/{id}/reopen
+GET    /api/v1/classes?academicYearId=   POST /api/v1/classes
+GET    /api/v1/subjects?classId=         POST /api/v1/subjects
+GET    /api/v1/teaching-assignments?teacherId=&classId=
+POST   /api/v1/teaching-assignments      DELETE /api/v1/teaching-assignments/{id}
 ```
 
 Публичны ровно четыре — `login`, `refresh`, `health`, `docs`; всё остальное
-требует access-токена. Заводить и править пользователей может только `ADMIN`;
-читать список может каждый, но `TEACHER` видит коллег и учеников своих
-классов, а `STUDENT` — только себя.
+требует access-токена. Писать справочники может только `ADMIN`. На чтении
+работают предикаты владения: `TEACHER` видит коллег, учеников своих классов,
+свои классы и свои назначения; `STUDENT` — себя, свой текущий класс и
+предметы этого класса, а назначения не видит вовсе.
 
 ## Запуск
 
@@ -106,13 +116,20 @@ docker compose exec -T db psql -U bilimedu -d bilimedu \
 | Argon2id | хеш пароля; в версии 2023 года был bcrypt с секретом в коде |
 | Testcontainers | тесты идут против настоящего PostgreSQL — половина правил живёт в ограничениях базы |
 
+Нарушения ограничений базы переводятся в коды ошибок контракта по имени
+ограничения (`ConstraintViolationTranslator`). Проверять «нет ли уже такой
+записи» запросом перед вставкой бессмысленно: два параллельных запроса
+пройдут проверку оба — именно так версия 2023 года плодила дубликаты.
+
 ## Дальше
 
-Модули по порядку: ~~users~~ → **academic-years и terms** → classes →
-subjects → teaching-assignments → enrollments → lessons → grades →
-notifications. Приёмочные критерии — список тестов в конце
+Модули по порядку: ~~users~~ → ~~academic-years и terms~~ → ~~classes~~ →
+~~subjects~~ → ~~teaching-assignments~~ → **enrollments** → lessons →
+grades → notifications. Приёмочные критерии — список тестов в конце
 `docs/permissions.md`: три из восьми закрыты, остальные пять требуют
 журнала и оценок.
 
-Следующий шаг — учебный календарь: без четвертей нельзя завести ни класс
-(`classes.academic_year_id`), ни урок (`lessons.term_id`).
+Следующий шаг — зачисления: `POST /enrollments`, перевод между классами
+и состав класса на произвольную дату (`GET /classes/{id}/roster?on=`).
+Именно там окупается временна́я модель, и именно там появляется предикат
+P3, без которого переведённый ученик видел бы чужие уроки.
