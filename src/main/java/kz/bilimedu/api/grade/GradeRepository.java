@@ -55,21 +55,4 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
                                        @Param("termId") Short termId,
                                        @Param("subjectId") Long subjectId,
                                        Pageable pageable);
-
-    /**
-     * Правило D9: ученику можно поставить оценку, только если он числился
-     * в классе на дату урока. Запрос взят из domain-rules.md дословно.
-     */
-    @Query(value = """
-            SELECT EXISTS (
-                SELECT 1 FROM enrollments e
-                JOIN teaching_assignments a ON a.class_id = e.class_id
-                JOIN lessons l              ON l.assignment_id = a.id
-                WHERE e.student_id = :studentId
-                  AND l.id         = :lessonId
-                  AND l.lesson_date BETWEEN e.from_date
-                                        AND COALESCE(e.to_date, 'infinity'::date))
-            """, nativeQuery = true)
-    boolean studentEnrolledOnLessonDate(@Param("studentId") Long studentId,
-                                        @Param("lessonId") Long lessonId);
 }

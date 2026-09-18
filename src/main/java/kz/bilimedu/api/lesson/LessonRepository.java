@@ -95,4 +95,22 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             """, nativeQuery = true)
     Optional<Boolean> termMatchesAssignmentYear(@Param("assignmentId") Long assignmentId,
                                                 @Param("termId") Short termId);
+
+    /**
+     * Правила D9 и его аналог для посещаемости: отметить ученика на уроке
+     * можно, только если он числился в классе на дату этого урока.
+     * Запрос взят из domain-rules.md дословно.
+     */
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1 FROM enrollments e
+                JOIN teaching_assignments a ON a.class_id = e.class_id
+                JOIN lessons l              ON l.assignment_id = a.id
+                WHERE e.student_id = :studentId
+                  AND l.id         = :lessonId
+                  AND l.lesson_date BETWEEN e.from_date
+                                        AND COALESCE(e.to_date, 'infinity'::date))
+            """, nativeQuery = true)
+    boolean studentEnrolledOnLessonDate(@Param("studentId") Long studentId,
+                                        @Param("lessonId") Long lessonId);
 }

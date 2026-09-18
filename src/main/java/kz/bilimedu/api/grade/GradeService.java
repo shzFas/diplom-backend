@@ -112,7 +112,7 @@ public class GradeService {
         // хуже отклонённого — учитель не увидит, что часть класса не прошла.
         Set<Long> notEnrolled = new LinkedHashSet<>();
         for (Long studentId : requested.keySet()) {
-            if (!grades.studentEnrolledOnLessonDate(studentId, lessonId)) {
+            if (!lessons.studentEnrolledOnLessonDate(studentId, lessonId)) {
                 notEnrolled.add(studentId);
             }
         }
